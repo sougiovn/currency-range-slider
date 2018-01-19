@@ -6,6 +6,9 @@ function RangeSlider(elementId, config) {
   var MOUSE_DOWN = 'mousedown';
   var MOUSE_MOVE = 'mousemove';
   var MOUSE_UP = 'mouseup';
+  var TOUCH_START = 'touchstart';
+  var TOUCH_MOVE = 'touchmove';
+  var TOUCH_END = 'touchend';
   var MIN = 'min';
   var MAX = 'max';
 
@@ -21,6 +24,7 @@ function RangeSlider(elementId, config) {
   var rootElement;
   var rangeContainer, sliderRadius;
   var sliderWidth;
+  var isMobile = 'ontouchstart' in document.documentElement;
   var valueFormatter = defaultValueFormatter;
   var valueParser = defaultValueParser;
   var debouncedOnInputMinValueChange = debounce(onInputMinValueChange, 600);
@@ -35,12 +39,21 @@ function RangeSlider(elementId, config) {
   };
 
   function init() {
+    setupMobileSupport();
     setupHTMLRefs();
     setupConfig();
     setupLabels();
     setupRangeValue();
     setupSliderPositions();
     setupHTMLEvents();
+  }
+
+  function setupMobileSupport() {
+    if (isMobile) {
+      MOUSE_DOWN = TOUCH_START;
+      MOUSE_MOVE = TOUCH_MOVE;
+      MOUSE_UP = TOUCH_END;
+    }
   }
 
   function setupHTMLRefs() {
@@ -142,12 +155,12 @@ function RangeSlider(elementId, config) {
     rootElement.removeEventListener(MOUSE_MOVE, onMaxSliderMouseMove, true);
   }
 
-  function onMinSliderMouseMove(mouseEvent) {
-    resolveMinSliderMouseMove(mouseEvent.clientX);
+  function onMinSliderMouseMove(event) {
+    resolveMinSliderMouseMove(getClientX(event));
   }
 
   function onMaxSliderMouseMove(mouseEvent) {
-    resolveMaxSliderMouseMove(mouseEvent.clientX);
+    resolveMaxSliderMouseMove(getClientX(event));
   }
 
   function resolveMinSliderMouseMove(mouseX) {
@@ -397,6 +410,13 @@ function RangeSlider(elementId, config) {
     value = value.replace(/\./g, '');
     value = value.replace(/\,/, '.');
     return +value;
+  }
+
+  function getClientX(event) {
+    if (isMobile) {
+      event = event.touches[0];
+    }
+    return event.clientX;
   }
 
   function debounce(fn, wait) {
