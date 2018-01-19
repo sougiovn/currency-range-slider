@@ -20,7 +20,7 @@ function RangeSlider(elementId, config) {
   var rangeHighlight;
   var rootElement;
   var rangeContainer, sliderRadius;
-  var sliderWidth = 20;
+  var sliderWidth;
   var valueFormatter = defaultValueFormatter;
   var valueParser = defaultValueParser;
   var debouncedOnInputMinValueChange = debounce(onInputMinValueChange, 600);
@@ -30,6 +30,8 @@ function RangeSlider(elementId, config) {
 
   return {
     destroy: destroy,
+    setMinValue: resolveMinValue,
+    setMaxValue: resolveMaxValue
   };
 
   function init() {
@@ -58,9 +60,7 @@ function RangeSlider(elementId, config) {
   function setupConfig() {
     minValue = config.min;
     maxValue = config.max;
-    if (config.sliderWidth) {
-      sliderWidth = config.sliderWidth;
-    }
+    sliderWidth = minSlider.offsetWidth;
     sliderRadius = sliderWidth / 2;
     if (config.valueFormatter) {
       valueFormatter = config.valueFormatter;
@@ -205,6 +205,10 @@ function RangeSlider(elementId, config) {
   function onInputMinValueChange(event) {
     var value = valueParser(event.target.value);
 
+    resolveMinValue(value);
+  }
+
+  function resolveMinValue(value) {
     var rangeContainerRect = getRangeContainerRect();
 
     var minSliderPct = getRangePercentage(value);
@@ -220,6 +224,10 @@ function RangeSlider(elementId, config) {
   function onInputMaxValueChange(event) {
     var value = valueParser(event.target.value);
 
+    resolveMaxValue(value);
+  }
+
+  function resolveMaxValue(value) {
     var rangeContainerRect = getRangeContainerRect();
     var sliderRadiusPct = getPercentage(sliderRadius, rangeContainerRect.width);
 
