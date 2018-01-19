@@ -329,7 +329,7 @@ function RangeSlider(elementId, config) {
     };
 
     var rangeChangeEvent = document.createEvent('CustomEvent');
-    rangeChangeEvent.initCustomEvent('rangeChange', true, false, { detail: parsedRange });
+    rangeChangeEvent.initCustomEvent('rangeChange', true, false, parsedRange);
 
     rootElement.dispatchEvent(rangeChangeEvent);
   }
