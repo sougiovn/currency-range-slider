@@ -10,7 +10,6 @@ var slider = RangeSlider('my-range', sliderConfig);
 var view = document.getElementById('view');
 
 document.getElementById('my-range').addEventListener('rangeChange', function(event) {
-  console.log(event)
   view.innerHTML = ['Min:', event.detail.min, '- Max:', event.detail.max].join(' ');
 });
 
