@@ -66,23 +66,29 @@ function CurrencyRangeSlider(elementId, config) {
 
   function setupHTMLRefs() {
     rootElement = document.getElementById(elementId);
-    labelMin = document.querySelector(['#', elementId, ' .currency-range-slider-label-min'].join(''));
-    labelMax = document.querySelector(['#', elementId, ' .currency-range-slider-label-max'].join(''));
+
+    labelMin = document.querySelector(['#', elementId, ' .currency-range-slider-label-container .currency-range-slider-label-min'].join(''));
+    labelMax = document.querySelector(['#', elementId, ' .currency-range-slider-label-container .currency-range-slider-label-max'].join(''));
+
     rangeContainer = document.querySelector(['#', elementId, ' .currency-range-slider-container'].join(''));
     rangeHighlight = document.querySelector(['#', elementId, ' .currency-range-slider-container .currency-range-slider-highlight'].join(''));
+
     minSlider = document.querySelector(['#', elementId, ' .currency-range-slider-container .currency-range-slider-min'].join(''));
     maxSlider = document.querySelector(['#', elementId, ' .currency-range-slider-container .currency-range-slider-max'].join(''));
-    minViewer = document.querySelector(['#', elementId, ' .currency-range-slider-viewer-container .currency-range-slider-viewer-min'].join(''));
-    maxViewer = document.querySelector(['#', elementId, ' .currency-range-slider-viewer-container .currency-range-slider-viewer-max'].join(''));
-    truncatedViewer = document.querySelector(['#', elementId, ' .currency-range-slider-viewer-container .currency-range-slider-viewer-truncated'].join(''));
-    viewMinValue = document.querySelector(['#', elementId, ' .currency-range-slider-viewer-container .currency-range-slider-viewer-min .currency-range-slider-viewer-view'].join(''));
-    viewMaxValue = document.querySelector(['#', elementId, ' .currency-range-slider-viewer-container .currency-range-slider-viewer-max .currency-range-slider-viewer-view'].join(''));
-    viewTruncatedValue = document.querySelector(['#', elementId, ' .currency-range-slider-viewer-container .currency-range-slider-viewer-truncated .currency-range-slider-viewer-view'].join(''));
-    inputMinValue = document.querySelector(['#', elementId, ' .currency-range-slider-viewer-container .currency-range-slider-viewer-min .currency-range-slider-viewer-input'].join(''));
-    inputMaxValue = document.querySelector(['#', elementId, ' .currency-range-slider-viewer-container .currency-range-slider-viewer-max .currency-range-slider-viewer-input'].join(''));
 
+    minViewer = document.querySelector(['#', elementId, ' .currency-range-slider-viewer-container .currency-range-slider-viewer-min'].join(''));
+    viewMinValue = document.querySelector(['#', elementId, ' .currency-range-slider-viewer-container .currency-range-slider-viewer-min .currency-range-slider-viewer-view'].join(''));
+    inputMinValue = document.querySelector(['#', elementId, ' .currency-range-slider-viewer-container .currency-range-slider-viewer-min .currency-range-slider-viewer-input'].join(''));
+
+    truncatedViewer = document.querySelector(['#', elementId, ' .currency-range-slider-viewer-container .currency-range-slider-viewer-truncated'].join(''));
+    viewTruncatedValue = document.querySelector(['#', elementId, ' .currency-range-slider-viewer-container .currency-range-slider-viewer-truncated .currency-range-slider-viewer-view'].join(''));
     inputTruncatedMinValue = document.querySelector(['#', elementId, ' .currency-range-slider-viewer-container .currency-range-slider-viewer-truncated .currency-range-slider-viewer-input-min'].join(''));
     inputTruncatedMaxValue = document.querySelector(['#', elementId, ' .currency-range-slider-viewer-container .currency-range-slider-viewer-truncated .currency-range-slider-viewer-input-max'].join(''));
+
+    maxViewer = document.querySelector(['#', elementId, ' .currency-range-slider-viewer-container .currency-range-slider-viewer-max'].join(''));
+    viewMaxValue = document.querySelector(['#', elementId, ' .currency-range-slider-viewer-container .currency-range-slider-viewer-max .currency-range-slider-viewer-view'].join(''));
+    inputMaxValue = document.querySelector(['#', elementId, ' .currency-range-slider-viewer-container .currency-range-slider-viewer-max .currency-range-slider-viewer-input'].join(''));
+
   }
 
   function setupConfig() {
@@ -141,10 +147,17 @@ function CurrencyRangeSlider(elementId, config) {
     rootElement.removeEventListener(MOUSE_MOVE, onMaxSliderMouseMove, true);
     viewMinValue.removeEventListener(CLICK, toggleMinEditingMode, true);
     viewMaxValue.removeEventListener(CLICK, toggleMaxEditingMode, true);
+    viewTruncatedValue.removeEventListener(CLICK, toggleTruncatedEditingMode, true);
     inputMinValue.removeEventListener(FOCUS_OUT, toggleMinEditingMode, true);
     inputMinValue.removeEventListener(KEY_UP, debouncedOnInputMinValueChange, true);
     inputMaxValue.removeEventListener(FOCUS_OUT, toggleMaxEditingMode, true);
     inputMaxValue.removeEventListener(KEY_UP, debouncedOnInputMaxValueChange, true);
+
+    inputTruncatedMinValue.removeEventListener(FOCUS_OUT, toggleMaxEditingMode, true);
+    inputTruncatedMinValue.removeEventListener(KEY_UP, debouncedOnInputMaxValueChange, true);
+    inputTruncatedMaxValue.removeEventListener(FOCUS_OUT, toggleMaxEditingMode, true);
+    inputTruncatedMaxValue.removeEventListener(KEY_UP, debouncedOnInputMaxValueChange, true);
+
     var destroyEvent = document.createEvent('Event');
     destroyEvent.initEvent(DESTROY);
     rootElement.dispatchEvent(destroyEvent);
@@ -264,6 +277,9 @@ function CurrencyRangeSlider(elementId, config) {
   }
 
   function resolveTruncatedViewer() {
+    if (editingMinValue || editingMaxValue) {
+      return;
+    }
     var minViewerClientRect = getClientRect(minViewer);
     var maxViewerClientRect = getClientRect(maxViewer);
     var rangeSliderContainerRect = getRangeContainerRect();
@@ -294,32 +310,32 @@ function CurrencyRangeSlider(elementId, config) {
   }
 
   function resolveTruncatedViewerPosition() {
-    var minViewerClientRect = getClientRect(minViewer);
+    var truncatedViewerClientRect = getClientRect(truncatedViewer);
     var rangeSliderContainer = getRangeContainerRect();
 
-    var minViewerWidthPct = getPercentage(minViewerClientRect.width / 2, rangeSliderContainer.width);
+    var truncatedViewerWidthPct = getPercentage(truncatedViewerClientRect.width / 2, rangeSliderContainer.width);
     var sliderRadiusPct = getPercentage(sliderRadius, rangeSliderContainer.width)
 
     var minSliderPct = +minSlider.style.left.replace(/\%/, '');
     var maxSliderPct = +maxSlider.style.left.replace(/\%/, '');
 
-    var middleSlidersPct = minSliderPct + ((maxSliderPct - minSliderPct) / 2);
+    var middleSlidersPct = minSliderPct + ((maxSliderPct - minSliderPct) / 2) + sliderRadiusPct;
 
-    var minViewerXPct = (middleSlidersPct - minViewerWidthPct);
+    var truncatedViewerXPct = (middleSlidersPct - truncatedViewerWidthPct);
 
-    if (middleSlidersPct < minViewerWidthPct) {
+    if (middleSlidersPct < truncatedViewerWidthPct) {
       minViewerXPct = 0;
     }
 
-    var maxViewerPct = 100 - (minViewerWidthPct * 2);
+    var maxViewerPct = 100 - (truncatedViewerWidthPct * 2);
 
-    if (minViewerXPct > 0) {
+    if (truncatedViewerXPct > 0) {
       if (middleSlidersPct > maxViewerPct) {
-        minViewerXPct = maxViewerPct;
+        truncatedViewerXPct = maxViewerPct;
       }
     }
 
-    truncatedViewer.style.left = [minViewerXPct, '%'].join('');
+    truncatedViewer.style.left = [truncatedViewerXPct, '%'].join('');
   }
 
   function resolveMaxSliderMouseMove(mouseX) {
@@ -352,6 +368,7 @@ function CurrencyRangeSlider(elementId, config) {
     var value = valueParser(event.target.value);
 
     resolveMinValue(value);
+    toggleMinEditingMode();
   }
 
   function resolveMinValue(value) {
@@ -381,6 +398,7 @@ function CurrencyRangeSlider(elementId, config) {
     }
 
     resolveMaxValue(value);
+    toggleMaxEditingMode();
   }
 
   function resolveMaxValue(value) {
