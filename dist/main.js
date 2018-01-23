@@ -3,6 +3,7 @@ var sliderConfig = {
   labelPrefix: 'R$ ',
   max: 200,
   min: 0,
+  limitToRange: false
 };
 
 var slider = RangeSlider('my-range', sliderConfig);
@@ -29,6 +30,12 @@ var setMaxValue = document.getElementById('setMaxValue-my-range');
 
 setMaxValue.addEventListener('click', function() {
   slider.setMaxValue(80);
+});
+
+var setLimitToRange = document.getElementById('setLimitToRange-my-range');
+
+setLimitToRange.addEventListener('click', function() {
+  slider.setLimitToRange(true);
 });
 
 /* ----------------------------- Slider 2 --------------------- */

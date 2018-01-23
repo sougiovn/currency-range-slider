@@ -1,14 +1,14 @@
 .range-slider-component {
   display: inline-block;
   width: 500px;
-  border-sizing: border-box;
+  box-sizing: border-box;
   border: 1px solid red;
   clear: both;
   padding: 8px; }
   .range-slider-component .range-input {
     display: inline-block;
     width: 100px;
-    border-sizing: border-box; }
+    box-sizing: border-box; }
   .range-slider-component .range-slider-label.range-slider-label-min {
     float: left; }
   .range-slider-component .range-slider-label.range-slider-label-max {

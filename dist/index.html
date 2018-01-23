@@ -9,39 +9,44 @@
   <title>Range Slider</title>
 
   <link rel="stylesheet" type="text/css" href="styles.css" />
+  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
 </head>
 
-<body>
-  <div id="my-range">
-    <div class="range-slider-component">
-      <span class="range-slider-label range-slider-label-min"></span>
-      <span class="range-slider-label range-slider-label-max"></span>
+<body class="container">
+  <div class="row">
+    <div class="col-lg-12">
+      <div id="my-range">
+        <div class="range-slider-component">
+          <span class="range-slider-label range-slider-label-min"></span>
+          <span class="range-slider-label range-slider-label-max"></span>
 
-      <div class="range-slider-container">
-        <span class="range-slider-highlight"></span>
-        <span class="range-slider range-slider-min"></span>
-        <span class="range-slider range-slider-max"></span>
-      </div>
+          <div class="range-slider-container">
+            <span class="range-slider-highlight"></span>
+            <span class="range-slider range-slider-min"></span>
+            <span class="range-slider range-slider-max"></span>
+          </div>
 
-      <div class="range-slider-viewer-container">
-        <div class="range-slider-viewer range-slider-viewer-min">
-          <span class="range-slider-viewer-view"></span>
-          <input type="text" class="range-slider-viewer-input" />
+          <div class="range-slider-viewer-container">
+            <div class="range-slider-viewer range-slider-viewer-min">
+              <span class="range-slider-viewer-view"></span>
+              <input type="text" class="range-slider-viewer-input" />
+            </div>
+
+            <div class="range-slider-viewer range-slider-viewer-max">
+              <span class="range-slider-viewer-view"></span>
+              <input type="text" class="range-slider-viewer-input" />
+            </div>
+          </div>
         </div>
 
-        <div class="range-slider-viewer range-slider-viewer-max">
-          <span class="range-slider-viewer-view"></span>
-          <input type="text" class="range-slider-viewer-input" />
-        </div>
-      </div>
+        <div id="view"></div>
+
+        <button id="destroy-my-range">destroy</button>
+        <button id="setMinValue-my-range">setMinValue</button>
+        <button id="setMaxValue-my-range">setMaxValue</button>
+        <button id="setLimitToRange-my-range">setLimitToRange</button>
     </div>
-
-    <div id="view"></div>
-
-    <button id="destroy-my-range">destroy</button>
-    <button id="setMinValue-my-range">setMinValue</button>
-    <button id="setMaxValue-my-range">setMaxValue</button>
-
+  </div>
 
     <hr />
 

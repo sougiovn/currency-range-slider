@@ -27,6 +27,7 @@ function RangeSlider(elementId, config) {
   var isMobile = 'ontouchstart' in document.documentElement;
   var valueFormatter = defaultValueFormatter;
   var valueParser = defaultValueParser;
+  var limitToRange = true;
   var debouncedOnInputMinValueChange = debounce(onInputMinValueChange, 600);
   var debouncedOnInputMaxValueChange = debounce(onInputMaxValueChange, 600);
 
@@ -35,7 +36,8 @@ function RangeSlider(elementId, config) {
   return {
     destroy: destroy,
     setMinValue: resolveMinValue,
-    setMaxValue: resolveMaxValue
+    setMaxValue: resolveMaxValue,
+    setLimitToRange: setLimitToRange
   };
 
   function init() {
@@ -75,13 +77,16 @@ function RangeSlider(elementId, config) {
     maxValue = config.max;
     sliderWidth = minSlider.offsetWidth;
     sliderRadius = sliderWidth / 2;
-    if (config.valueFormatter) {
+    if (config.limitToRange != null && typeof config.limitToRange === 'boolean') {
+      limitToRange = config.limitToRange
+    }
+    if (config.valueFormatter != null && typeof config.valueFormatter === 'function') {
       valueFormatter = config.valueFormatter;
     }
-    if (config.valueParser) {
+    if (config.valueParser != null && typeof config.valueFormatter === 'function') {
       valueParser = config.valueParser;
     }
-    if (config.labelPrefix) {
+    if (config.labelPrefix != null && typeof config.labelPrefix === 'string') {
       labelPrefix = config.labelPrefix;
     }
   }
@@ -237,6 +242,16 @@ function RangeSlider(elementId, config) {
   function onInputMaxValueChange(event) {
     var value = valueParser(event.target.value);
 
+    if (value > maxValue) {
+      if (!limitToRange) {
+        maxValue = value;
+        setupLabels();
+        resolveMinValue(valueParser(range.min))
+      } else {
+        value = maxValue;
+      }
+    }
+
     resolveMaxValue(value);
   }
 
@@ -369,6 +384,12 @@ function RangeSlider(elementId, config) {
       mouseX -= rangeContainerX;
     }
     return mouseX;
+  }
+
+  function setLimitToRange(bool) {
+    if (bool != null && typeof bool === 'boolean') {
+      limitToRange = bool;
+    }
   }
 
   function getRangeValue(sliderPct) {
