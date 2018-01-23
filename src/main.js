@@ -6,7 +6,7 @@ var sliderConfig = {
   limitToRange: false
 };
 
-var slider = RangeSlider('my-range', sliderConfig);
+var slider = CurrencyRangeSlider('my-range', sliderConfig);
 
 var view = document.getElementById('view');
 
@@ -36,20 +36,4 @@ var setLimitToRange = document.getElementById('setLimitToRange-my-range');
 
 setLimitToRange.addEventListener('click', function() {
   slider.setLimitToRange(true);
-});
-
-/* ----------------------------- Slider 2 --------------------- */
-
-var sliderConfig2 = {
-  labelPrefix: 'R$ ',
-  max: 200,
-  min: 10,
-};
-
-var slider2 = RangeSlider('my-range2', sliderConfig2);
-
-var view2 = document.getElementById('view2');
-
-document.getElementById('my-range2').addEventListener('rangeChange', function(event) {
-  view2.innerHTML = ['Min:', event.detail.min, '- Max:', event.detail.max].join(' ');
 });

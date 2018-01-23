@@ -13,27 +13,37 @@
 
 <body>
   <div id="my-range">
-    <div class="range-slider-component">
-      <span class="range-slider-label range-slider-label-min"></span>
-      <span class="range-slider-label range-slider-label-max"></span>
+    <div class="currency-range-slider-component">
 
-      <div class="range-slider-container">
-        <span class="range-slider-highlight"></span>
-        <span class="range-slider range-slider-min"></span>
-        <span class="range-slider range-slider-max"></span>
+      <div class="currency-range-slider-label-container">
+        <span class="currency-range-slider-label currency-range-slider-label-min"></span>
+        <span class="currency-range-slider-label currency-range-slider-label-max"></span>
       </div>
 
-      <div class="range-slider-viewer-container">
-        <div class="range-slider-viewer range-slider-viewer-min">
-          <span class="range-slider-viewer-view"></span>
-          <input type="text" class="range-slider-viewer-input" />
+      <div class="currency-range-slider-container">
+        <span class="currency-range-slider-highlight"></span>
+        <span class="currency-range-slider currency-range-slider-min"></span>
+        <span class="currency-range-slider currency-range-slider-max"></span>
+      </div>
+
+      <div class="currency-range-slider-viewer-container">
+        <div class="currency-range-slider-viewer currency-range-slider-viewer-min">
+          <span class="currency-range-slider-viewer-view"></span>
+          <input type="text" class="currency-range-slider-viewer-input" />
         </div>
 
-        <div class="range-slider-viewer range-slider-viewer-max">
-          <span class="range-slider-viewer-view"></span>
-          <input type="text" class="range-slider-viewer-input" />
+        <div class="currency-range-slider-viewer currency-range-slider-viewer-truncated">
+          <span class="currency-range-slider-viewer-view"></span>
+          <input type="text" class="currency-range-slider-viewer-input currency-range-slider-viewer-input-min" />
+          <input type="text" class="currency-range-slider-viewer-input currency-range-slider-viewer-input-max" />
+        </div>
+
+        <div class="currency-range-slider-viewer currency-range-slider-viewer-max">
+          <span class="currency-range-slider-viewer-view"></span>
+          <input type="text" class="currency-range-slider-viewer-input" />
         </div>
       </div>
+
     </div>
 
     <div id="view"></div>
@@ -41,37 +51,9 @@
     <button id="destroy-my-range">destroy</button>
     <button id="setMinValue-my-range">setMinValue</button>
     <button id="setMaxValue-my-range">setMaxValue</button>
-    <button id="setMaxValue-my-range">setMaxValue</button>
+    <button id="setLimitToRange-my-range">setLimitToRange</button>
 
-    <hr />
-
-    <div id="my-range2">
-      <div class="range-slider-component">
-        <span class="range-slider-label range-slider-label-min"></span>
-        <span class="range-slider-label range-slider-label-max"></span>
-
-        <div class="range-slider-container">
-          <span class="range-slider-highlight"></span>
-          <span class="range-slider range-slider-min"></span>
-          <span class="range-slider range-slider-max"></span>
-        </div>
-
-        <div class="range-slider-viewer-container">
-          <div class="range-slider-viewer range-slider-viewer-min">
-            <span class="range-slider-viewer-view"></span>
-            <input type="text" class="range-slider-viewer-input" />
-          </div>
-
-          <div class="range-slider-viewer range-slider-viewer-max">
-            <span class="range-slider-viewer-view"></span>
-            <input type="text" class="range-slider-viewer-input" />
-          </div>
-        </div>
-      </div>
-
-      <span id="view2"></span>
-
-      <script type="text/javascript" src="./range-slider.js"></script>
+      <script type="text/javascript" src="./currency-range-slider.js"></script>
       <script type="text/javascript" src="./main.js"></script>
 </body>
 

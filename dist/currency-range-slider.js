@@ -1,4 +1,4 @@
-function RangeSlider(elementId, config) {
+function CurrencyRangeSlider(elementId, config) {
   var CLICK = 'click';
   var DESTROY = 'destroy';
   var KEY_UP = 'keyup';
@@ -11,12 +11,18 @@ function RangeSlider(elementId, config) {
   var TOUCH_END = 'touchend';
   var MIN = 'min';
   var MAX = 'max';
+  var NONE = 'none';
+  var BLOCK = 'block';
+  var VISIBLE = 'visible';
+  var HIDDEN = 'hidden';
 
   var labelPrefix = '';
   var labelMin, labelMax;
-  var viewMinValue, viewMaxValue;
-  var editingMinValue = false, editingMaxValue = false;
-  var inputMinValue, inputMaxValue;
+  var minViewer, maxViewer, truncatedViewer;
+  var viewMinValue, viewMaxValue, viewTruncatedValue;
+  var inputMinValue, inputMaxValue, inputTruncatedMinValue, inputTruncatedMaxValue;
+  var editingMinValue = false,
+    editingMaxValue = false;
   var maxSlider, maxValue;
   var minSlider, minValue;
   var range;
@@ -60,22 +66,29 @@ function RangeSlider(elementId, config) {
 
   function setupHTMLRefs() {
     rootElement = document.getElementById(elementId);
-    labelMin = document.querySelector(['#', elementId, ' .range-slider-label-min'].join(''));
-    labelMax = document.querySelector(['#', elementId, ' .range-slider-label-max'].join(''));
-    rangeContainer = document.querySelector(['#', elementId, ' .range-slider-container'].join(''));
-    rangeHighlight = document.querySelector(['#', elementId, ' .range-slider-container .range-slider-highlight'].join(''));
-    minSlider = document.querySelector(['#', elementId, ' .range-slider-container .range-slider-min'].join(''));
-    maxSlider = document.querySelector(['#', elementId, ' .range-slider-container .range-slider-max'].join(''));
-    viewMinValue = document.querySelector(['#', elementId, ' .range-slider-viewer-container .range-slider-viewer-min .range-slider-viewer-view'].join(''));
-    viewMaxValue = document.querySelector(['#', elementId, ' .range-slider-viewer-container .range-slider-viewer-max .range-slider-viewer-view'].join(''));
-    inputMinValue = document.querySelector(['#', elementId, ' .range-slider-viewer-container .range-slider-viewer-min .range-slider-viewer-input'].join(''));
-    inputMaxValue = document.querySelector(['#', elementId, ' .range-slider-viewer-container .range-slider-viewer-max .range-slider-viewer-input'].join(''));
+    labelMin = document.querySelector(['#', elementId, ' .currency-range-slider-label-min'].join(''));
+    labelMax = document.querySelector(['#', elementId, ' .currency-range-slider-label-max'].join(''));
+    rangeContainer = document.querySelector(['#', elementId, ' .currency-range-slider-container'].join(''));
+    rangeHighlight = document.querySelector(['#', elementId, ' .currency-range-slider-container .currency-range-slider-highlight'].join(''));
+    minSlider = document.querySelector(['#', elementId, ' .currency-range-slider-container .currency-range-slider-min'].join(''));
+    maxSlider = document.querySelector(['#', elementId, ' .currency-range-slider-container .currency-range-slider-max'].join(''));
+    minViewer = document.querySelector(['#', elementId, ' .currency-range-slider-viewer-container .currency-range-slider-viewer-min'].join(''));
+    maxViewer = document.querySelector(['#', elementId, ' .currency-range-slider-viewer-container .currency-range-slider-viewer-max'].join(''));
+    truncatedViewer = document.querySelector(['#', elementId, ' .currency-range-slider-viewer-container .currency-range-slider-viewer-truncated'].join(''));
+    viewMinValue = document.querySelector(['#', elementId, ' .currency-range-slider-viewer-container .currency-range-slider-viewer-min .currency-range-slider-viewer-view'].join(''));
+    viewMaxValue = document.querySelector(['#', elementId, ' .currency-range-slider-viewer-container .currency-range-slider-viewer-max .currency-range-slider-viewer-view'].join(''));
+    viewTruncatedValue = document.querySelector(['#', elementId, ' .currency-range-slider-viewer-container .currency-range-slider-viewer-truncated .currency-range-slider-viewer-view'].join(''));
+    inputMinValue = document.querySelector(['#', elementId, ' .currency-range-slider-viewer-container .currency-range-slider-viewer-min .currency-range-slider-viewer-input'].join(''));
+    inputMaxValue = document.querySelector(['#', elementId, ' .currency-range-slider-viewer-container .currency-range-slider-viewer-max .currency-range-slider-viewer-input'].join(''));
+
+    inputTruncatedMinValue = document.querySelector(['#', elementId, ' .currency-range-slider-viewer-container .currency-range-slider-viewer-truncated .currency-range-slider-viewer-input-min'].join(''));
+    inputTruncatedMaxValue = document.querySelector(['#', elementId, ' .currency-range-slider-viewer-container .currency-range-slider-viewer-truncated .currency-range-slider-viewer-input-max'].join(''));
   }
 
   function setupConfig() {
     minValue = config.min;
     maxValue = config.max;
-    sliderWidth = minSlider.offsetWidth;
+    sliderWidth = getClientRect(minSlider).width;
     sliderRadius = sliderWidth / 2;
     if (config.limitToRange != null && typeof config.limitToRange === 'boolean') {
       limitToRange = config.limitToRange
@@ -108,8 +121,8 @@ function RangeSlider(elementId, config) {
     var rangeContainerFullWidth = rangeContainerRect.left + rangeContainerRect.width;
     minSlider.style.left = '0%';
     maxSlider.style.left = '100%';
-    resolveMinSliderMouseMove(0);
     resolveMaxSliderMouseMove(rangeContainerFullWidth);
+    resolveMinSliderMouseMove(0);
   }
 
   function setupHTMLEvents() {
@@ -144,6 +157,7 @@ function RangeSlider(elementId, config) {
   function setupMinSliderMouseDownEvent() {
     minSlider.addEventListener(MOUSE_DOWN, onMinSliderMouseDown, true);
   }
+
   function setupMaxSliderMouseDownEvent() {
     maxSlider.addEventListener(MOUSE_DOWN, onMaxSliderMouseDown, true);
   }
@@ -151,6 +165,7 @@ function RangeSlider(elementId, config) {
   function onMinSliderMouseDown() {
     rootElement.addEventListener(MOUSE_MOVE, onMinSliderMouseMove, true);
   }
+
   function onMaxSliderMouseDown() {
     rootElement.addEventListener(MOUSE_MOVE, onMaxSliderMouseMove, true);
   }
@@ -174,8 +189,8 @@ function RangeSlider(elementId, config) {
     var minSliderX = getMouseXOnRangeContainer(mouseX, rangeContainerRect);
 
     if (compareToMaxSlider(minSliderX, rangeContainerRect)) {
-      minSlider.style.zIndex = 2;
-      maxSlider.style.zIndex = 1;
+      minSlider.style.zIndex = 4;
+      maxSlider.style.zIndex = 3;
       minSlider.style.left = maxSlider.style.left;
       range.min = range.max;
     } else {
@@ -194,14 +209,127 @@ function RangeSlider(elementId, config) {
     emitRangeValueChange();
   }
 
+  function resolveMinViewerPosition() {
+    var minViewerClientRect = getClientRect(minViewer);
+
+    var rangeSliderContainer = getRangeContainerRect();
+
+    var minViewerWidthPct = getPercentage(minViewerClientRect.width / 2, rangeSliderContainer.width);
+    var sliderRadiusPct = getPercentage(sliderRadius, rangeSliderContainer.width)
+
+    var minSliderPct = +minSlider.style.left.replace(/\%/, '');
+
+    var minViewerXPct = (minSliderPct - minViewerWidthPct) + sliderRadiusPct;
+
+    if (minSliderPct < minViewerWidthPct) {
+      minViewerXPct = 0;
+    }
+
+    var maxViewerPct = 100 - (minViewerWidthPct * 2);
+
+    if (minViewerXPct > 0) {
+      if (minSliderPct > maxViewerPct) {
+        minViewerXPct = maxViewerPct;
+      }
+    }
+
+    minViewer.style.left = [minViewerXPct, '%'].join('');
+  }
+
+  function resolveMaxViewerPosition() {
+    var maxViewerClientRect = getClientRect(maxViewer);
+
+    var rangeSliderContainer = getRangeContainerRect();
+
+    var maxViewerWidthPct = getPercentage(maxViewerClientRect.width / 2, rangeSliderContainer.width);
+    var sliderRadiusPct = getPercentage(sliderRadius, rangeSliderContainer.width)
+
+    var maxSliderPct = +maxSlider.style.left.replace(/\%/, '');
+
+    var maxViewerXPct = (maxSliderPct - maxViewerWidthPct) + sliderRadiusPct;
+
+    if (maxSliderPct < maxViewerWidthPct) {
+      maxViewerXPct = 0;
+    }
+
+    var maxViewerPct = 100 - (maxViewerWidthPct * 2);
+
+    if (maxViewerXPct > 0) {
+      if (maxSliderPct > maxViewerPct) {
+        maxViewerXPct = maxViewerPct;
+      }
+    }
+
+    maxViewer.style.left = [maxViewerXPct, '%'].join('');
+  }
+
+  function resolveTruncatedViewer() {
+    var minViewerClientRect = getClientRect(minViewer);
+    var maxViewerClientRect = getClientRect(maxViewer);
+    var rangeSliderContainerRect = getRangeContainerRect();
+
+    var minViewerFullWidth = minViewerClientRect.left + minViewerClientRect.width;
+    var maxViewerFullWidth = maxViewerClientRect.left + maxViewerClientRect.width;
+
+    var minLabel = [labelPrefix, range.min].join('');
+    var maxLabel = [labelPrefix, range.max].join('');
+    var rangeLabel = [minLabel, maxLabel].join(' - ');
+
+    if (minViewerFullWidth > maxViewerClientRect.left) {
+      minViewer.style.visibility = HIDDEN;
+      maxViewer.style.visibility = HIDDEN;
+      truncatedViewer.style.visibility = VISIBLE;
+      viewTruncatedValue.innerHTML = rangeLabel;
+      if (valueParser(range.min) === valueParser(range.max)) {
+        viewTruncatedValue.innerHTML = minLabel;
+      }
+    } else {
+      truncatedViewer.style.visibility = HIDDEN;
+      minViewer.style.visibility = VISIBLE;
+      maxViewer.style.visibility = VISIBLE;
+      return;
+    }
+
+    resolveTruncatedViewerPosition();
+  }
+
+  function resolveTruncatedViewerPosition() {
+    var minViewerClientRect = getClientRect(minViewer);
+    var rangeSliderContainer = getRangeContainerRect();
+
+    var minViewerWidthPct = getPercentage(minViewerClientRect.width / 2, rangeSliderContainer.width);
+    var sliderRadiusPct = getPercentage(sliderRadius, rangeSliderContainer.width)
+
+    var minSliderPct = +minSlider.style.left.replace(/\%/, '');
+    var maxSliderPct = +maxSlider.style.left.replace(/\%/, '');
+
+    var middleSlidersPct = minSliderPct + ((maxSliderPct - minSliderPct) / 2);
+
+    var minViewerXPct = (middleSlidersPct - minViewerWidthPct);
+
+    if (middleSlidersPct < minViewerWidthPct) {
+      minViewerXPct = 0;
+    }
+
+    var maxViewerPct = 100 - (minViewerWidthPct * 2);
+
+    if (minViewerXPct > 0) {
+      if (middleSlidersPct > maxViewerPct) {
+        minViewerXPct = maxViewerPct;
+      }
+    }
+
+    truncatedViewer.style.left = [minViewerXPct, '%'].join('');
+  }
+
   function resolveMaxSliderMouseMove(mouseX) {
     var rangeContainerRect = getRangeContainerRect();
 
     var maxSliderX = getMouseXOnRangeContainer(mouseX, rangeContainerRect);
 
     if (compareToMinSlider(maxSliderX, rangeContainerRect)) {
-      maxSlider.style.zIndex = 2;
-      minSlider.style.zIndex = 1;
+      maxSlider.style.zIndex = 4;
+      minSlider.style.zIndex = 3;
       maxSlider.style.left = minSlider.style.left;
       range.max = range.min;
     } else {
@@ -270,15 +398,16 @@ function RangeSlider(elementId, config) {
 
   function updateComponent(type) {
     calculateRangeHighlight();
+    var minLabel = [labelPrefix, range.min].join('');
+    var maxLabel = [labelPrefix, range.max].join('');
+    viewMinValue.innerHTML = minLabel;
+    viewMaxValue.innerHTML = maxLabel;
     if (type === MIN) {
-      if (!editingMinValue) {
-        viewMinValue.innerHTML = [labelPrefix, range.min].join('');
-      }
+      resolveMinViewerPosition();
     } else {
-      if (!editingMaxValue) {
-        viewMaxValue.innerHTML = [labelPrefix, range.max].join('');
-      }
+      resolveMaxViewerPosition();
     }
+    resolveTruncatedViewer();
   }
 
   function toggleMinEditingMode() {
@@ -303,16 +432,16 @@ function RangeSlider(elementId, config) {
 
   function setupViewValueEvents(type) {
     if (type === MIN) {
-      inputMinValue.style.display = 'none';
+      inputMinValue.style.display = NONE;
       inputMinValue.value = '';
-      viewMinValue.style.display = 'block';
+      viewMinValue.style.display = BLOCK;
       inputMinValue.removeEventListener(KEY_UP, debouncedOnInputMinValueChange, true);
       inputMinValue.removeEventListener(FOCUS_OUT, toggleMinEditingMode, true);
       viewMinValue.addEventListener(CLICK, toggleMinEditingMode, true);
     } else {
-      inputMaxValue.style.display = 'none';
+      inputMaxValue.style.display = NONE;
       inputMaxValue.value = '';
-      viewMaxValue.style.display = 'block';
+      viewMaxValue.style.display = BLOCK;
       inputMaxValue.removeEventListener(KEY_UP, debouncedOnInputMaxValueChange, true);
       inputMaxValue.removeEventListener(FOCUS_OUT, toggleMaxEditingMode, true);
       viewMaxValue.addEventListener(CLICK, toggleMaxEditingMode, true);
@@ -321,15 +450,15 @@ function RangeSlider(elementId, config) {
 
   function setupInputValueEvents(type) {
     if (type === MIN) {
-      viewMinValue.style.display = 'none';
-      inputMinValue.style.display = 'block';
+      viewMinValue.style.display = NONE;
+      inputMinValue.style.display = BLOCK;
       viewMinValue.removeEventListener(CLICK, toggleMinEditingMode, true);
       inputMinValue.focus();
       inputMinValue.addEventListener(FOCUS_OUT, toggleMinEditingMode, true);
       inputMinValue.addEventListener(KEY_UP, debouncedOnInputMinValueChange, true);
     } else {
-      viewMaxValue.style.display = 'none';
-      inputMaxValue.style.display = 'block';
+      viewMaxValue.style.display = NONE;
+      inputMaxValue.style.display = BLOCK;
       viewMaxValue.removeEventListener(CLICK, toggleMaxEditingMode, true);
       inputMaxValue.focus();
       inputMaxValue.addEventListener(FOCUS_OUT, toggleMaxEditingMode, true);
@@ -367,6 +496,7 @@ function RangeSlider(elementId, config) {
     var minSliderX = getSliderRectX(minSlider);
     return maxSliderX <= minSliderX - rangeContainerRect.left;
   }
+
   function compareToMaxSlider(minSliderX, rangeContainerRect) {
     var maxSliderX = getSliderRectX(maxSlider);
     return minSliderX >= maxSliderX - rangeContainerRect.left;
@@ -408,12 +538,16 @@ function RangeSlider(elementId, config) {
     return (total * pct) / 100;
   }
 
+  function getClientRect(element) {
+    return element.getBoundingClientRect();
+  }
+
   function getSliderRectX(slider) {
-    return slider.getBoundingClientRect().left + sliderRadius;
+    return getClientRect(slider).left + sliderRadius;
   }
 
   function getRangeContainerRect() {
-     return rangeContainer.getBoundingClientRect();
+    return rangeContainer.getBoundingClientRect();
   }
 
   function defaultValueFormatter(value) {
@@ -442,10 +576,10 @@ function RangeSlider(elementId, config) {
 
   function debounce(fn, wait) {
     var timeout;
-    return function() {
+    return function () {
       var args = arguments;
       clearTimeout(timeout);
-      timeout = setTimeout(function() {
+      timeout = setTimeout(function () {
         fn.apply({}, args);
       }, wait);
     };
