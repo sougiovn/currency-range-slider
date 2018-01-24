@@ -1,135 +1,32 @@
-.currency-range-slider-component {
-  display: inline-block;
-  position: relative;
-  width: 500px;
-  box-sizing: border-box;
-  clear: both;
+nav {
+  margin-bottom: 16px;
+}
+
+a {
+  color: black;
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+h3, h5 {
+  margin: 16px 0px;
+}
+
+pre {
+  background-color: lighten(grey, 43%);
   padding: 8px;
-  .currency-range-slider-label-container {
-    position: relative;
-    display: block;
-    height: 28px;
-    .currency-range-slider-label {
-      font-size: 0.8rem;
-      padding: 3px;
-      box-sizing: border-box;
-      position: absolute;
-      color: grey;
-      border-radius: 3px;
-      background-color: lighten(grey, 40%);
-      cursor: default;
-      &:before {
-        content: '';
-        width: 0px;
-        height: 0px;
-        position: absolute;
-        bottom: -3px;
-      }
-      &.currency-range-slider-label-min {
-        left: 0px;
-        &:before {
-          left: 0px;
-          border-top: 5px solid transparent;
-          border-bottom: 5px solid transparent;
-          border-left: 10px solid lighten(grey, 40%);
-        }
-      }
-      &.currency-range-slider-label-max {
-        right: 0px;
-        &:before {
-          right: 0px;
-          border-top: 5px solid transparent;
-          border-bottom: 5px solid transparent;
-          border-right: 10px solid lighten(grey, 40%);
-        }
-      }
-    }
-  }
-  .currency-range-slider-container {
-    position: relative;
-    display: block;
-    box-sizing: border-box;
-    width: 100%;
-    height: 20px;
-    margin: 0px;
-    z-index: 2;
-    &:before {
-      content: '';
-      position: absolute;
-      left: 10px;
-      width: 100%;
-      top: 8px;
-      left: 0px;
-      height: 4px;
-      background-color: lighten(grey, 30%);
-      box-shadow: 0px 3px 3px -2px darken(grey, 10%) inset;
-    }
-    .currency-range-slider-highlight {
-      position: absolute;
-      top: 8px;
-      height: 4px;
-      background-color: grey;
-      box-shadow: 0px 3px 3px -2px darken(grey, 10%) inset;
-    }
-    .currency-range-slider {
-      box-sizing: border-box;
-      position: absolute;
-      height: 10px;
-      width: 10px;
-      border-radius: 10px;
-      top: 5px;
-      background-color: darken(grey, 10%);
-      box-shadow: 0px 0px 5px darken(grey, 20%) inset;
-    }
-  }
+  border-radius: 8px;
+}
 
-  .currency-range-slider-viewer-container {
-    position: relative;
-    display: block;
-    z-index: 1;
-    width: 100%;
-    height: 18px;
-    .currency-range-slider-viewer {
-      position: absolute;
-      box-sizing: border-box;
-      font-size: 0.9rem;
-      height: 18px;
-      line-height: 18px;
-      bottom: 0px;
+.descriptions {
+  width: 60%;
+}
 
-      &.currency-range-slider-viewer-min {
-      }
-      &.currency-range-slider-viewer-truncated {
-        visibility: hidden;
-      }
-      &.currency-range-slider-viewer-max {
-        .currency-range-slider-viewer-input {
-          text-align: right;
-        }
-      }
+.parameters {
+  width: 20%;
+}
 
-      .currency-range-slider-viewer-view {
-        white-space: pre;
-        padding: 3px;
-        color: grey;
-        border-radius: 3px;
-        background-color: lighten(grey, 40%);
-      }
-
-      .currency-range-slider-viewer-input {
-        display: none;
-        outline: none;
-        border: none;
-        font-size: 0.9rem;
-        height: 18px;
-        line-height: 18px;
-        border-bottom: 1px solid grey;
-        padding: 3px;
-        color: grey;
-        border-radius: 3px;
-        background-color: lighten(grey, 40%);
-        width: 100px;
-      }
-    }
-  }
+.values {
+  width: 20%;
 }

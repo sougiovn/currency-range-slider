@@ -6,7 +6,10 @@ const clean = require('gulp-clean');
 const rename = require('gulp-rename');
 const runSequence = require('run-sequence');
 const webserver = require('gulp-webserver');
+const cleanCss = require('gulp-clean-css');
+const fs = require('fs');
 
+const packageJson = JSON.parse(fs.readFileSync('./package.json'));
 const dist = './dist';
 const demo = `${dist}/demo`;
 const src = './src';
@@ -14,14 +17,18 @@ const src = './src';
 gulp.task('clean', () => gulp.src(dist).pipe(clean()));
 
 gulp.task('dev:sass', () => {
-  return gulp.src(`${src}/styles.scss`)
+  gulp.src(`${src}/styles.scss`)
+    .pipe(sass().on('error', sass.logError))
+    .pipe(gulp.dest(dist));
+
+  return gulp.src(`${src}/${packageJson.name}.scss`)
     .pipe(sass().on('error', sass.logError))
     .pipe(gulp.dest(dist));
 });
 
 gulp.task('dev:html', () => {
   return gulp.src(`${src}/index.html`)
-    .pipe(gulp.dest(dist));
+    .pipe(gulp.dest('.'));
 });
 
 gulp.task('dev:js', () => {
@@ -30,21 +37,29 @@ gulp.task('dev:js', () => {
 });
 
 gulp.task('build:sass', () => {
-  return gulp.src(`${src}/styles.scss`)
+  gulp.src(`${src}/styles.scss`)
     .pipe(sass().on('error', sass.logError))
     .pipe(gulp.dest(demo));
+
+  return gulp.src(`${src}/${packageJson.name}.scss`)
+    .pipe(sass().on('error', sass.logError))
+    .pipe(cleanCss())
+    .pipe(rename({
+      extname: '.min.css'
+    }))
+    .pipe(gulp.dest(dist));
 });
 
 gulp.task('build:html', () => {
   return gulp.src(`${src}/index.html`)
-    .pipe(gulp.dest(demo));
+    .pipe(gulp.dest('.'));
 });
 
 gulp.task('build:js', () => {
   gulp.src(`${src}/*.js`)
     .pipe(gulp.dest(demo));
 
-  return gulp.src(`${src}/range-slider`)
+  return gulp.src(`${src}/${packageJson.name}.js`)
     .pipe(uglifyjs())
     .pipe(rename({
       extname: '.min.js'
@@ -53,11 +68,11 @@ gulp.task('build:js', () => {
 });
 
 gulp.task('watch', () => {
-  runSequence('clean', 'dev:html', 'dev:sass', 'dev:js', () => {
+  runSequence('demo', () => {
     gulp.watch(`${src}/index.html`, ['dev:html']);
     gulp.watch(`${src}/styles.scss`, ['dev:sass']);
     gulp.watch(`${src}/*.js`, ['dev:js']);
-    gulp.src(dist)
+    gulp.src('.')
       .pipe(webserver({
         livereload: true,
         port: 3000
@@ -65,7 +80,11 @@ gulp.task('watch', () => {
   });
 });
 
+gulp.task('demo', () => {
+  runSequence('clean', 'dev:html', 'dev:sass', 'dev:js');
+});
+
 gulp.task('build', () => {
-  runSequence('build:html', 'build:sass', 'build:js');
+  runSequence('clean', 'build:html', 'build:sass', 'build:js');
 });
 

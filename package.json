@@ -1,5 +1,5 @@
 {
-  "name": "range-slider",
+  "name": "currency-range-slider",
   "version": "1.0.0",
   "main": "index.js",
   "repository": "git@github.com:gigioSouza/range-slider.git",
@@ -7,9 +7,12 @@
   "license": "MIT",
   "scripts": {
     "start": "gulp watch",
+    "demo": "gulp demo",
     "build": "gulp build"
   },
-  "dependencies": {},
+  "dependencies": {
+    "gulp-clean-css": "^3.9.2"
+  },
   "devDependencies": {
     "gulp": "^3.9.1",
     "gulp-clean": "^0.4.0",
