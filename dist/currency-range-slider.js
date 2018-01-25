@@ -33,7 +33,7 @@
         var VISIBLE = 'visible';
 
         var debounceTime = 600;
-        var editingMinValue = false, editingMaxValue = false, editingTruncatedValue = false;
+        var editingMinValue = false, editingMaxValue = false, editingJoinedValue = false;
         var inputEnter = false;
         var isMobile = false;
         var labelPrefix = '';
@@ -41,11 +41,12 @@
         var valueFormatter = defaultValueFormatter;
         var valueParser = defaultValueParser;
 
+        var colors;
         var labelMin, labelMax;
         var minViewer, maxViewer;
-        var truncatedViewer, truncatedViewerInputs;
-        var minViewerView, maxViewerView, viewTruncatedValue;
-        var minViewerInput, maxViewerInput, truncatedViewerMinInput, inputTruncatedMaxValue;
+        var joinedViewer, joinedViewerInputs;
+        var minViewerView, maxViewerView, viewJoinedValue;
+        var minViewerInput, maxViewerInput, joinedViewerMinInput, joinedViewerMaxInput;
         var maxSlider, maxRange;
         var minSlider, minRange;
         var range;
@@ -55,7 +56,7 @@
         var rangeContainer, sliderRadius;
         var resolvedOnMinInputKeyUp;
         var resolvedOnMaxInputKeyUp;
-        var resolvedOnTruncatedInputKeyUp;
+        var resolvedOnJoinedInputKeyUp;
 
         init();
 
@@ -99,16 +100,16 @@
             maxSlider.removeEventListener(MOUSE_DOWN, onMaxSliderMouseDown, true);
             minViewerView.removeEventListener(CLICK, toggleMinEditingMode, true);
             maxViewerView.removeEventListener(CLICK, toggleMaxEditingMode, true);
-            viewTruncatedValue.removeEventListener(CLICK, toggleTruncatedEditingMode, true);
+            viewJoinedValue.removeEventListener(CLICK, toggleJoinedEditingMode, true);
             minViewerInput.removeEventListener(FOCUS_OUT, toggleMinEditingMode, true);
             minViewerInput.removeEventListener(KEY_UP, resolvedOnMinInputKeyUp, true);
             maxViewerInput.removeEventListener(FOCUS_OUT, toggleMaxEditingMode, true);
             maxViewerInput.removeEventListener(KEY_UP, resolvedOnMaxInputKeyUp, true);
 
-            truncatedViewerMinInput.removeEventListener(FOCUS_OUT, toggleMaxEditingMode, true);
-            truncatedViewerMinInput.removeEventListener(KEY_UP, resolvedOnMaxInputKeyUp, true);
-            inputTruncatedMaxValue.removeEventListener(FOCUS_OUT, toggleMaxEditingMode, true);
-            inputTruncatedMaxValue.removeEventListener(KEY_UP, resolvedOnMaxInputKeyUp, true);
+            joinedViewerMinInput.removeEventListener(FOCUS_OUT, toggleMaxEditingMode, true);
+            joinedViewerMinInput.removeEventListener(KEY_UP, resolvedOnMaxInputKeyUp, true);
+            joinedViewerMaxInput.removeEventListener(FOCUS_OUT, toggleMaxEditingMode, true);
+            joinedViewerMaxInput.removeEventListener(KEY_UP, resolvedOnMaxInputKeyUp, true);
 
             var destroyEvent = document.createEvent('Event');
             destroyEvent.initEvent(DESTROY, false, false);
@@ -177,6 +178,7 @@
             setupDOM();
             setupDOMRefs();
             setupConfiguration();
+            setupColors();
             setupLabels();
             setupSliderPositions();
             setupResolvedKeyUpEvents();
@@ -233,15 +235,15 @@
             }
         }
 
-        function onTruncatedFocusOut(event) {
-            if (event.target !== truncatedViewerMinInput && event.target !== inputTruncatedMaxValue) {
-                toggleTruncatedEditingMode();
+        function onJoinedFocusOut(event) {
+            if (event.target !== joinedViewerMinInput && event.target !== joinedViewerMaxInput) {
+                toggleJoinedEditingMode();
             }
         }
 
-        function onTruncatedInputKeyUp() {
-            var minValue = truncatedViewerMinInput.value;
-            var maxValue = inputTruncatedMaxValue.value;
+        function onJoinedInputKeyUp() {
+            var minValue = joinedViewerMinInput.value;
+            var maxValue = joinedViewerMaxInput.value;
 
             if (isNotNull(minValue) && isNotEmpty(minValue) && isNotNull(maxValue) && isNotEmpty(maxValue)) {
                 if (validateInput(minValue) && validateInput(maxValue)) {
@@ -447,7 +449,7 @@
             minViewer.style.left = [minViewerXPct, '%'].join('');
         }
 
-        function resolveTruncatedViewer() {
+        function resolveJoinedViewer() {
             if (editingMinValue || editingMaxValue) {
                 return;
             }
@@ -463,26 +465,26 @@
             if (minViewerFullWidth > maxViewerClientRect.left) {
                 minViewer.style.visibility = HIDDEN;
                 maxViewer.style.visibility = HIDDEN;
-                truncatedViewer.style.visibility = VISIBLE;
-                viewTruncatedValue.innerHTML = rangeLabel;
+                joinedViewer.style.visibility = VISIBLE;
+                viewJoinedValue.innerHTML = rangeLabel;
                 if (valueParser(range.min) === valueParser(range.max)) {
-                    viewTruncatedValue.innerHTML = minLabel;
+                    viewJoinedValue.innerHTML = minLabel;
                 }
-                editingTruncatedValue = false;
-                setupTruncatedViewerViewEvents();
-                resolveTruncatedViewerPosition();
+                editingJoinedValue = false;
+                setupJoinedViewerViewEvents();
+                resolveJoinedViewerPosition();
             } else {
-                truncatedViewer.style.visibility = HIDDEN;
+                joinedViewer.style.visibility = HIDDEN;
                 minViewer.style.visibility = VISIBLE;
                 maxViewer.style.visibility = VISIBLE;
             }
         }
 
-        function resolveTruncatedViewerPosition() {
-            var truncatedViewerClientRect = getClientRect(truncatedViewer);
+        function resolveJoinedViewerPosition() {
+            var joinedViewerClientRect = getClientRect(joinedViewer);
             var rangeSliderContainer = getRangeContainerRect();
 
-            var truncatedViewerWidthPct = getPercentage(truncatedViewerClientRect.width / 2, rangeSliderContainer.width);
+            var joinedViewerWidthPct = getPercentage(joinedViewerClientRect.width / 2, rangeSliderContainer.width);
             var sliderRadiusPct = getPercentage(sliderRadius, rangeSliderContainer.width);
 
             var minSliderPct = getMinSliderXPct();
@@ -490,21 +492,21 @@
 
             var middleSlidersPct = minSliderPct + ((maxSliderPct - minSliderPct) / 2) + sliderRadiusPct;
 
-            var truncatedViewerXPct = (middleSlidersPct - truncatedViewerWidthPct);
+            var joinedViewerXPct = (middleSlidersPct - joinedViewerWidthPct);
 
-            if (middleSlidersPct < truncatedViewerWidthPct) {
-                truncatedViewerXPct = 0;
+            if (middleSlidersPct < joinedViewerWidthPct) {
+                joinedViewerXPct = 0;
             }
 
-            var maxViewerPct = 100 - (truncatedViewerWidthPct * 2);
+            var maxViewerPct = 100 - (joinedViewerWidthPct * 2);
 
-            if (truncatedViewerXPct > 0) {
+            if (joinedViewerXPct > 0) {
                 if (middleSlidersPct > maxViewerPct) {
-                    truncatedViewerXPct = maxViewerPct;
+                    joinedViewerXPct = maxViewerPct;
                 }
             }
 
-            truncatedViewer.style.left = [truncatedViewerXPct, '%'].join('');
+            joinedViewer.style.left = [joinedViewerXPct, '%'].join('');
             updateRangeHighlight();
         }
 
@@ -512,10 +514,50 @@
             var minValue = event.detail.min;
             var maxValue = event.detail.min;
 
-            truncatedViewerMinInput.value = minValue;
-            inputTruncatedMaxValue.value = maxValue;
+            joinedViewerMinInput.value = minValue;
+            joinedViewerMaxInput.value = maxValue;
 
-            onTruncatedInputKeyUp();
+            onJoinedInputKeyUp();
+        }
+
+        function setupColors() {
+            if (isNotNull(colors)) {
+                if (isNotNull(colors.sliderBgColor)) {
+                    minSlider.style.backgroundColor = colors.sliderBgColor;
+                    maxSlider.style.backgroundColor = colors.sliderBgColor;
+                }
+                if (isNotNull(colors.sliderBoxShadowColor)) {
+                    minSlider.style.boxShadow = ['0px 0px 5px ', colors.sliderBoxShadowColor,' inset'].join('');
+                    maxSlider.style.boxShadow = ['0px 0px 5px ', colors.sliderBoxShadowColor,' inset'].join('');
+                }
+                if (isNotNull(colors.highlightBgColor)) {
+                    rangeHighlight.style.backgroundColor = colors.highlightBgColor;
+                }
+                if (isNotNull(colors.highlightBoxShadowColor)) {
+                    rangeHighlight.style.boxShadow = ['0px 0px 5px ', colors.highlightBoxShadowColor,' inset'].join('');
+                }
+                if (isNotNull(colors.viewerBgColor)) {
+                    minViewer.style.backgroundColor = colors.viewerBgColor;
+                    maxViewer.style.backgroundColor = colors.viewerBgColor;
+                    joinedViewer.style.backgroundColor = colors.viewerBgColor;
+                }
+                if (isNotNull(colors.viewerColor)) {
+                    minViewer.style.color = colors.viewerColor;
+                    maxViewer.style.color = colors.viewerColor;
+                    joinedViewer.style.color = colors.viewerColor;
+
+                    minViewerInput.style.color = colors.viewerColor;
+                    maxViewerInput.style.color = colors.viewerColor;
+                    joinedViewerMinInput.style.color = colors.viewerColor;
+                    joinedViewerMaxInput.style.color = colors.viewerColor;
+                }
+                if (isNotNull(colors.viewerInputBottomBorder)) {
+                    minViewerInput.style.borderBottomColor = colors.viewerInputBottomBorder;
+                    maxViewerInput.style.borderBottomColor = colors.viewerInputBottomBorder;
+                    joinedViewerMinInput.style.borderBottomColor = colors.viewerInputBottomBorder;
+                    joinedViewerMaxInput.style.borderBottomColor = colors.viewerInputBottomBorder;
+                }
+            }
         }
 
         function setupConfiguration() {
@@ -524,6 +566,9 @@
             sliderWidth = getClientRect(minSlider).width;
             sliderRadius = sliderWidth / 2;
 
+            if (isNotNull(config.colors)) {
+                colors = config.colors;
+            }
             if (isNotNull(config.debounceTime) && isNumber(config.debounceTime)) {
                 debounceTime = config.debounceTime;
             }
@@ -612,29 +657,29 @@
             minViewerInput.setAttribute(CLASS, 'currency-range-slider-viewer-input');
             minViewer.appendChild(minViewerInput);
 
-            var truncatedViewer = document.createElement(DIV);
-            truncatedViewer.setAttribute(CLASS, 'currency-range-slider-viewer currency-range-slider-viewer-truncated');
-            viewerContainer.appendChild(truncatedViewer);
+            var joinedViewer = document.createElement(DIV);
+            joinedViewer.setAttribute(CLASS, 'currency-range-slider-viewer currency-range-slider-viewer-joined');
+            viewerContainer.appendChild(joinedViewer);
 
-            var truncatedViewerView = document.createElement(SPAN);
-            truncatedViewerView.setAttribute(CLASS, 'currency-range-slider-viewer-view');
-            truncatedViewer.appendChild(truncatedViewerView);
+            var joinedViewerView = document.createElement(SPAN);
+            joinedViewerView.setAttribute(CLASS, 'currency-range-slider-viewer-view');
+            joinedViewer.appendChild(joinedViewerView);
 
-            var truncatedViewerInputs = document.createElement(SPAN);
-            truncatedViewerInputs.setAttribute(CLASS, 'currency-range-slider-viewer-inputs');
-            truncatedViewer.appendChild(truncatedViewerInputs);
+            var joinedViewerInputs = document.createElement(SPAN);
+            joinedViewerInputs.setAttribute(CLASS, 'currency-range-slider-viewer-inputs');
+            joinedViewer.appendChild(joinedViewerInputs);
 
-            var truncatedViewerMinInput = document.createElement(INPUT);
-            truncatedViewerMinInput.setAttribute(TYPE, 'text');
-            truncatedViewerMinInput.setAttribute(CLASS, 'currency-range-slider-viewer-input currency-range-slider-viewer-input-min');
-            truncatedViewerInputs.appendChild(truncatedViewerMinInput);
+            var joinedViewerMinInput = document.createElement(INPUT);
+            joinedViewerMinInput.setAttribute(TYPE, 'text');
+            joinedViewerMinInput.setAttribute(CLASS, 'currency-range-slider-viewer-input currency-range-slider-viewer-input-min');
+            joinedViewerInputs.appendChild(joinedViewerMinInput);
 
-            truncatedViewerInputs.appendChild(document.createTextNode(' - '));
+            joinedViewerInputs.appendChild(document.createTextNode(' - '));
 
-            var truncatedViewerMaxInput = document.createElement(INPUT);
-            truncatedViewerMaxInput.setAttribute(TYPE, 'text');
-            truncatedViewerMaxInput.setAttribute(CLASS, 'currency-range-slider-viewer-input currency-range-slider-viewer-input-max');
-            truncatedViewerInputs.appendChild(truncatedViewerMaxInput);
+            var joinedViewerMaxInput = document.createElement(INPUT);
+            joinedViewerMaxInput.setAttribute(TYPE, 'text');
+            joinedViewerMaxInput.setAttribute(CLASS, 'currency-range-slider-viewer-input currency-range-slider-viewer-input-max');
+            joinedViewerInputs.appendChild(joinedViewerMaxInput);
 
             var maxViewer = document.createElement(DIV);
             maxViewer.setAttribute(CLASS, 'currency-range-slider-viewer currency-range-slider-viewer-max');
@@ -664,11 +709,11 @@
             minViewerView = rootElement.querySelector('.currency-range-slider-viewer-container .currency-range-slider-viewer-min .currency-range-slider-viewer-view');
             minViewerInput = rootElement.querySelector('.currency-range-slider-viewer-container .currency-range-slider-viewer-min .currency-range-slider-viewer-input');
 
-            truncatedViewer = rootElement.querySelector('.currency-range-slider-viewer-container .currency-range-slider-viewer-truncated');
-            truncatedViewerInputs = rootElement.querySelector('.currency-range-slider-viewer-container .currency-range-slider-viewer-truncated .currency-range-slider-viewer-inputs');
-            viewTruncatedValue = rootElement.querySelector('.currency-range-slider-viewer-container .currency-range-slider-viewer-truncated .currency-range-slider-viewer-view');
-            truncatedViewerMinInput = rootElement.querySelector('.currency-range-slider-viewer-container .currency-range-slider-viewer-truncated .currency-range-slider-viewer-input-min');
-            inputTruncatedMaxValue = rootElement.querySelector('.currency-range-slider-viewer-container .currency-range-slider-viewer-truncated .currency-range-slider-viewer-input-max');
+            joinedViewer = rootElement.querySelector('.currency-range-slider-viewer-container .currency-range-slider-viewer-joined');
+            joinedViewerInputs = rootElement.querySelector('.currency-range-slider-viewer-container .currency-range-slider-viewer-joined .currency-range-slider-viewer-inputs');
+            viewJoinedValue = rootElement.querySelector('.currency-range-slider-viewer-container .currency-range-slider-viewer-joined .currency-range-slider-viewer-view');
+            joinedViewerMinInput = rootElement.querySelector('.currency-range-slider-viewer-container .currency-range-slider-viewer-joined .currency-range-slider-viewer-input-min');
+            joinedViewerMaxInput = rootElement.querySelector('.currency-range-slider-viewer-container .currency-range-slider-viewer-joined .currency-range-slider-viewer-input-max');
 
             maxViewer = rootElement.querySelector('.currency-range-slider-viewer-container .currency-range-slider-viewer-max');
             maxViewerView = rootElement.querySelector('.currency-range-slider-viewer-container .currency-range-slider-viewer-max .currency-range-slider-viewer-view');
@@ -716,11 +761,11 @@
             if (inputEnter) {
                 resolvedOnMinInputKeyUp = debounceUntilEnter(onMinInputKeyUp);
                 resolvedOnMaxInputKeyUp = debounceUntilEnter(onMaxInputKeyUp);
-                resolvedOnTruncatedInputKeyUp = debounceUntilEnter(onTruncatedInputKeyUp);
+                resolvedOnJoinedInputKeyUp = debounceUntilEnter(onJoinedInputKeyUp);
             } else {
                 resolvedOnMinInputKeyUp = debounce(onMinInputKeyUp, debounceTime);
                 resolvedOnMaxInputKeyUp = debounce(onMaxInputKeyUp, debounceTime);
-                resolvedOnTruncatedInputKeyUp = debounce(onTruncatedInputKeyUp, debounceTime);
+                resolvedOnJoinedInputKeyUp = debounce(onJoinedInputKeyUp, debounceTime);
             }
         }
 
@@ -741,30 +786,30 @@
             resolveMinValue(valueParser(range.min), false);
         }
 
-        function setupTruncatedViewerViewEvents() {
-            truncatedViewerInputs.style.display = NONE;
-            truncatedViewerMinInput.value = '';
-            inputTruncatedMaxValue.value = '';
+        function setupJoinedViewerViewEvents() {
+            joinedViewerInputs.style.display = NONE;
+            joinedViewerMinInput.value = '';
+            joinedViewerMaxInput.value = '';
 
-            viewTruncatedValue.style.display = INLINE_BLOCK;
-            window.removeEventListener(CLICK, onTruncatedFocusOut, true);
-            truncatedViewerMinInput.removeEventListener(KEY_UP, resolvedOnTruncatedInputKeyUp, true);
+            viewJoinedValue.style.display = INLINE_BLOCK;
+            window.removeEventListener(CLICK, onJoinedFocusOut, true);
+            joinedViewerMinInput.removeEventListener(KEY_UP, resolvedOnJoinedInputKeyUp, true);
 
-            inputTruncatedMaxValue.removeEventListener(KEY_UP, resolvedOnTruncatedInputKeyUp, true);
+            joinedViewerMaxInput.removeEventListener(KEY_UP, resolvedOnJoinedInputKeyUp, true);
 
-            viewTruncatedValue.addEventListener(CLICK, toggleTruncatedEditingMode, true);
+            viewJoinedValue.addEventListener(CLICK, toggleJoinedEditingMode, true);
         }
 
-        function setupTruncatedViewerInputEvents() {
-            viewTruncatedValue.style.display = NONE;
-            truncatedViewerInputs.style.display = INLINE_BLOCK;
+        function setupJoinedViewerInputEvents() {
+            viewJoinedValue.style.display = NONE;
+            joinedViewerInputs.style.display = INLINE_BLOCK;
 
-            viewTruncatedValue.removeEventListener(CLICK, toggleTruncatedEditingMode, true);
+            viewJoinedValue.removeEventListener(CLICK, toggleJoinedEditingMode, true);
 
-            window.addEventListener(CLICK, onTruncatedFocusOut, true);
-            truncatedViewerMinInput.focus();
-            truncatedViewerMinInput.addEventListener(KEY_UP, resolvedOnTruncatedInputKeyUp, true);
-            inputTruncatedMaxValue.addEventListener(KEY_UP, resolvedOnTruncatedInputKeyUp, true);
+            window.addEventListener(CLICK, onJoinedFocusOut, true);
+            joinedViewerMinInput.focus();
+            joinedViewerMinInput.addEventListener(KEY_UP, resolvedOnJoinedInputKeyUp, true);
+            joinedViewerMaxInput.addEventListener(KEY_UP, resolvedOnJoinedInputKeyUp, true);
         }
 
         function setupViewerViewEvents(type) {
@@ -835,16 +880,16 @@
             updateViewers(MIN);
         }
 
-        function toggleTruncatedEditingMode() {
-            if (editingTruncatedValue) {
-                setupTruncatedViewerViewEvents();
+        function toggleJoinedEditingMode() {
+            if (editingJoinedValue) {
+                setupJoinedViewerViewEvents();
             } else {
-                setupTruncatedViewerInputEvents();
+                setupJoinedViewerInputEvents();
             }
 
-            editingTruncatedValue = !editingTruncatedValue;
+            editingJoinedValue = !editingJoinedValue;
 
-            resolveTruncatedViewerPosition();
+            resolveJoinedViewerPosition();
         }
 
         function updateRangeHighlight() {
@@ -878,7 +923,7 @@
             } else {
                 resolveMaxViewerPosition();
             }
-            resolveTruncatedViewer();
+            resolveJoinedViewer();
         }
 
         function validateInput(inputValue) {

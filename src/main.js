@@ -54,3 +54,18 @@ var rangedRangeSliderConfig = {
     }
 };
 CurrencyRangeSlider('ranged-range-slider', rangedRangeSliderConfig);
+
+var coloredRangeSliderConfig = {
+    min: 0,
+    max: 100,
+    colors: {
+        sliderBgColor: 'pink',
+        sliderBoxShadowColor: 'darkred',
+        highlightBgColor: 'lightblue',
+        highlightBoxShadowColor: 'darkblue',
+        viewerBgColor: 'darkgreen',
+        viewerColor: 'lightgreen',
+        viewerInputBottomBorder: 'yellow'
+    }
+};
+CurrencyRangeSlider('colored-range-slider', coloredRangeSliderConfig);

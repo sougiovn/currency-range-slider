@@ -380,6 +380,70 @@ CurrencyRangeSlider('input-enter-range-slider', inputEnterRangeSliderConfig);</p
             </div>
         </div>
 
+        <div id="example-colored" class="card">
+            <div class="card-header anchor">
+                Customizando cores <a href="#example-colored"><i class="fa fa-link"></i></a>
+            </div>
+            <div class="card-body">
+                <p>
+                    Definindo o parâmetro <code>colors</code> com is possíveis atributos:
+                    <table class="table table-bordered">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>Atributo</th>
+                                <th>Descrição</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>sliderBgColor</td>
+                                <td>Cor de fundo dos sliders de seleção</td>
+                            </tr>
+                            <tr>
+                                <td>sliderBoxShadowColor</td>
+                                <td>Cor da sombra em volta dos slider de seleção</td>
+                            </tr>
+                            <tr>
+                                <td>highlightBgColor</td>
+                                <td>Cor de fundo da barra que representa intervalo selecionado</td>
+                            </tr>
+                            <tr>
+                                <td>highlightBoxShadowColor</td>
+                                <td>Cor da sombra em volta da barra que representa intervalo selecionado</td>
+                            </tr>
+                            <tr>
+                                <td>viewerBgColor</td>
+                                <td>Cor de fundo dos labels que acompanham os sliders, apresentando os valores selecionados</td>
+                            </tr>
+                            <tr>
+                                <td>viewerColor</td>
+                                <td>Cor da fonte dos labels que acompanham os sliders, apresentando os valores selecionados</td>
+                            </tr>
+                            <tr>
+                                <td>viewerInputBottomBorder</td>
+                                <td>Cor da borda inferior dos inputs que acompanham os sliders</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </p>
+                <div id="colored-range-slider"></div>
+                <pre>var coloredRangeSliderConfig = {
+    min: 0,
+    max: 100,
+    colors: {
+        sliderBgColor: 'pink',
+        sliderBoxShadowColor: 'darkred',
+        highlightBgColor: 'lightblue',
+        highlightBoxShadowColor: 'darkblue',
+        viewerBgColor: 'darkgreen',
+        viewerColor: 'lightgreen',
+        viewerInputBottomBorder: 'yellow'
+    }
+};
+CurrencyRangeSlider('colored-range-slider', coloredRangeSliderConfig);</pre>
+            </div>
+        </div>
+
     </div>
 </div>
 
