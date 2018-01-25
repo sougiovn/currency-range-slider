@@ -13,10 +13,25 @@ h3, h5 {
   margin: 16px 0px;
 }
 
+.anchor {
+  a {
+    visibility: hidden;
+  }
+  &:hover {
+    a {
+      visibility: visible;
+    }
+  }
+}
+
 pre {
   background-color: lighten(grey, 43%);
   padding: 8px;
   border-radius: 8px;
+}
+
+.card {
+  margin-bottom: 16px;
 }
 
 .descriptions {

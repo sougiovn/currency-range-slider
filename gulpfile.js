@@ -70,7 +70,7 @@ gulp.task('build:js', () => {
 gulp.task('watch', () => {
   runSequence('demo', () => {
     gulp.watch(`${src}/index.html`, ['dev:html']);
-    gulp.watch(`${src}/styles.scss`, ['dev:sass']);
+    gulp.watch(`${src}/*.scss`, ['dev:sass']);
     gulp.watch(`${src}/*.js`, ['dev:js']);
     gulp.src('.')
       .pipe(webserver({

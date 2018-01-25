@@ -2,113 +2,125 @@
 <html>
 
 <head>
-  <meta charset="UTF-8" />
+    <meta charset="UTF-8"/>
 
-  <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
 
-  <title>Range Slider</title>
+    <title>Range Slider</title>
 
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
-  <link rel="stylesheet" href="./dist/styles.css" />
-  <link rel="stylesheet" href="./dist/currency-range-slider.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="./dist/styles.css"/>
+    <link rel="stylesheet" href="./dist/currency-range-slider.css"/>
 </head>
 
 <body>
-  <nav class="navbar navbar-dark bg-dark">
+<nav class="navbar navbar-dark bg-dark">
     <div class="container">
-      <div class="col-12">
-        <span class="navbar-brand mb-0 h1">Currency Range Slider</span>
-      </div>
+        <div class="col-12">
+            <span class="navbar-brand mb-0 h1">Currency Range Slider</span>
+        </div>
     </div>
-  </nav>
+</nav>
 
-  <div class="container">
+<div class="container">
     <div class="col-12">
-      <h3 id="modo-uso">
-        <a href="#modo-uso"><i class="fa fa-link"></i></a> Modo de uso
-      </h3>
-      <p>
-        Este componente é dedicado exclusivamente para trabalhar com range de valores monetários positivos.
-      </p>
-      <h5>Exemplo</h4>
-      <pre>var rangeSliderConfig = {
+        <h3 class="anchor" id="how-to">
+            Modo de uso <a href="#how-to"><i class="fa fa-link"></i></a>
+        </h3>
+        <p>
+            Este componente é dedicado exclusivamente para trabalhar com range de valores monetários positivos.
+        </p>
+        <h5>Exemplo</h5>
+        <div id="how-to-range-slider"></div>
+        <pre>var rangeSliderConfig = {
   min: 0,
   max: 100
 };
 
 CurrencyRangeSlider('id-elemento', rangeSliderConfig);</pre>
-      <div id="modo-uso-range-slider"></div>
     </div>
 
     <div class="col-12">
-      <h3 id="parametro-config">
-        <a href="#parametro-config"><i class="fa fa-link"></i></a> Parâmetros de configuração
-      </h3>
+        <h3 class="anchor" id="config">
+            Parâmetros de configuração <a href="#config"><i class="fa fa-link"></i></a>
+        </h3>
 
-      <table class="table table-bordered">
-        <caption>* obrigatório</caption>
+        <table class="table table-bordered">
+            <caption>* obrigatório</caption>
 
-        <thead class="thead-dark">
-          <tr>
-            <th class="parameters">Parâmetro</th>
-            <th class="values">Valor</th>
-            <th class="descriptions">Descrição</th>
-          </tr>
-        </thead>
+            <thead class="thead-dark">
+            <tr>
+                <th class="parameters">Parâmetro</th>
+                <th class="values">Valor</th>
+                <th class="descriptions">Descrição</th>
+            </tr>
+            </thead>
 
-        <tbody>
-          <tr>
-            <td>debounceTime</td>
-            <td>number | default: 600</td>
-            <td>Tempo de debounce para atualizar slider ao inserir dados no input.</td>
-          </tr>
+            <tbody>
+            <tr>
+                <td>debounceTime</td>
+                <td>number | default: 600</td>
+                <td>Tempo de debounce para atualizar slider ao inserir dados no input.</td>
+            </tr>
 
-          <tr>
-            <td>inputEnter</td>
-            <td>boolean | default: false</td>
-            <td>Input deixa de usar função de debounce para atualizar slider e passa a atualizar quando o usuário tecla <code>ENTER<code></code>.</td>
-          </tr>
+            <tr>
+                <td>inputEnter</td>
+                <td>boolean | default: false</td>
+                <td>
+                    Input deixa de usar função de debounce para atualizar slider e passa a atualizar quando o usuário
+                    tecla <code>ENTER</code>.
+                </td>
+            </tr>
 
-          <tr>
-            <td>labelPrefix</td>
-            <td>string | default: ''</td>
-            <td>Texto prefixado nas labels.</td>
-          </tr>
+            <tr>
+                <td>labelPrefix</td>
+                <td>string | default: ''</td>
+                <td>Texto prefixado nas labels.</td>
+            </tr>
 
-          <tr>
-            <td>limitToRange</td>
-            <td>boolean | default: true</td>
-            <td>Caso <code>true</code>, ao informar em um input, um valor maior do que limite definido para o intervalo, este número passa a ser o limite do intervalo. Funciona para valores mínimo e máximo, porém o valor mínimo não assume valor negativo.</td>
-          </tr>
+            <tr>
+                <td>limitToRange</td>
+                <td>boolean | default: true</td>
+                <td>Caso <code>true</code>, ao informar em um input, um valor maior do que limite definido para o
+                    intervalo, este número passa a ser o limite do intervalo. Funciona para valores mínimo e máximo,
+                    porém o valor mínimo não assume valor negativo.
+                </td>
+            </tr>
 
-          <tr>
-            <td>max *</td>
-            <td>number</td>
-            <td>Limite máximo do intervalo.</td>
-          </tr>
+            <tr>
+                <td>max *</td>
+                <td>number</td>
+                <td>Limite máximo do intervalo.</td>
+            </tr>
 
-          <tr>
-            <td>min *</td>
-            <td>number</td>
-            <td>Limite mínimo do intervalo.</td>
-          </tr>
+            <tr>
+                <td>min *</td>
+                <td>number</td>
+                <td>Limite mínimo do intervalo.</td>
+            </tr>
 
-          <tr>
-            <td>range</td>
-            <td>object | default: {min, max}</td>
-            <td>Objeto contendo atributos <code>min</code> e <code>max</code> para atribuir aos valores do intervalo selecionado. Caso não seja passado nenhum valor, o intervalor selecionado será igual aos limites do intervalo.</td>
-          </tr>
+            <tr>
+                <td>range</td>
+                <td>object | default: {min, max}</td>
+                <td>Objeto contendo atributos <code>min</code> e <code>max</code> para atribuir aos valores do intervalo
+                    selecionado. Caso não seja passado nenhum valor, o intervalor selecionado será igual aos limites do
+                    intervalo.
+                </td>
+            </tr>
 
-          <tr>
-            <td rowspan="2">valueFormatter</td>
-            <td>function</td>
-            <td rowspan="2">Função de formatação de valores, usada para formatar o valor número gerado dos calculos para manter o valor no componente e apresentar labels. A função recebe um <code>number</code> e retorna uma <code>string</code>. O valor é mantido como string dentro do componente para não haver problemas de calculos com ponto flutuante.
-            </td>
-          </tr>
+            <tr>
+                <td rowspan="2">valueFormatter</td>
+                <td>function</td>
+                <td rowspan="2">Função de formatação de valores, usada para formatar o valor número gerado dos calculos
+                    para manter o valor no componente e apresentar labels. A função recebe um <code>number</code> e
+                    retorna uma <code>string</code>. O valor é mantido como string dentro do componente para não haver
+                    problemas de calculos com ponto flutuante.
+                </td>
+            </tr>
 
-          <tr>
-            <td>
+            <tr>
+                <td>
               <pre>function defaultValueFormatter(value) {
   if (value == null) {
     return '';
@@ -116,115 +128,182 @@ CurrencyRangeSlider('id-elemento', rangeSliderConfig);</pre>
   value = value.toFixed(2);
   return value.replace(/\./, ',');
 }</pre>
-            </td>
-          </tr>
+                </td>
+            </tr>
 
-          <tr>
-            <td rowspan="2">valueParser</td>
-            <td>function</td>
-            <td rowspan="2">Função de parser de valores, usada para parsear o valor string mantido pelo componente como <code>string</code> em um <code>number</code>. A função recebe uma <code>string</code> e retorna uma <code>number</code>. A função é usada para parsear os inputs e calcular a posição dos sliders e parsear o valor emitido no evento <code>rangeChange</code>.
-            </td>
-          </tr>
+            <tr>
+                <td rowspan="2">valueParser</td>
+                <td>function</td>
+                <td rowspan="2">Função de parser de valores, usada para parsear o valor string mantido pelo componente
+                    como <code>string</code> em um <code>number</code>. A função recebe uma <code>string</code> e
+                    retorna uma <code>number</code>. A função é usada para parsear os inputs e calcular a posição dos
+                    sliders e parsear o valor emitido no evento <code>rangeChange</code>.
+                </td>
+            </tr>
 
-          <tr>
-            <td>
+            <tr>
+                <td>
               <pre>function defaultValueParser(value) {
   if (value == null) {
     return 0;
   }
-  value = value.replace(/\./g, '');
+  value = value.replace(/\./, '');
   value = value.replace(/\,/, '.');
   return +value;
 }</pre>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+                </td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 
     <div class="col-12">
-      <h3 id="eventos">
-        <a href="#eventos"><i class="fa fa-link"></i></a> Eventos
-      </h3>
+        <h3 class="anchor" id="events">
+            Eventos <a href="#events"><i class="fa fa-link"></i></a>
+        </h3>
 
-      <table class="table table-bordered">
-        <thead class="thead-dark">
-          <tr>
-            <th>Evento</th>
-            <th>Descrição</th>
-          </tr>
-        </thead>
+        <table class="table table-bordered">
+            <thead class="thead-dark">
+            <tr>
+                <th>Evento</th>
+                <th>Descrição</th>
+            </tr>
+            </thead>
 
-        <tbody>
-          <tr>
-            <th colspan="2" scope="row">Entrada</th>
-          </tr>
+            <tbody>
+            <tr>
+                <th colspan="2" scope="row">Entrada</th>
+            </tr>
 
-          <tr>
-            <td>destroy</td>
-            <td>
-              Evento responsável pela "destruição" do componente. Ao chama-lo, o componente remove todos seus eventos registrados no DOM e para de responder à eventos de entrada.
-            </td>
-          </tr>
+            <tr>
+                <td>destroy</td>
+                <td>
+                    Evento responsável pela "destruição" do componente. Ao chama-lo, o componente remove todos seus
+                    events registrados no DOM e para de responder à events de entrada.
+                </td>
+            </tr>
 
-          <tr>
-            <td>setRange</td>
-            <td>
-              Evento responsável por passar valor do intervalo desejado programaticamente. Este evento espera receber um <code>CustomEvent</code> com um objeto <code>{ min, max }</code> em seu atributo <code>detail</code>.
-            </td>
-          </tr>
+            <tr>
+                <td>setRange</td>
+                <td>
+                    Evento responsável por passar valor do intervalo desejado programaticamente. Este evento espera
+                    receber um <code>CustomEvent</code> com um objeto <code>{ min, max }</code> em seu atributo <code>detail</code>.
+                </td>
+            </tr>
 
-          <tr>
-            <th colspan="2" scope="row">Saída</th>
-          </tr>
+            <tr>
+                <th colspan="2" scope="row">Saída</th>
+            </tr>
 
-          <tr>
-            <td>rangeChange</td>
-            <td>
-              Evento emitido quando há alteração de valores do intervalo. O componente não trata o <code>debounce</code> da emissão deste evento. É emitido um <code>CustomEvent</code> contendo um objeto <code>{ min, max }</code> em seu atributo <code>detail</code>.
-            </td>
-          </tr>
-        </tbody>
-      </table>
+            <tr>
+                <td>rangeChange</td>
+                <td>
+                    Evento emitido quando há alteração de valores do intervalo. O componente não trata o
+                    <code>debounce</code> da emissão deste evento. É emitido um <code>CustomEvent</code> contendo um
+                    objeto <code>{ min, max }</code> em seu atributo <code>detail</code>.
+                </td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 
     <div class="col-12">
-      <h3 id="exemplos">
-        <a href="#exemplos"><i class="fa fa-link"></i></a> Exemplos
-      </h3>
+        <h3 class="anchor" id="examples">
+            Exemplos <a href="#examples"><i class="fa fa-link"></i></a>
+        </h3>
 
-      <div class="card">
-        <div class="card-header">Básico</div>
-        <div class="card-body">
-          <pre>var basicRangeSliderConfig = {
+        <div id="example-basic" class="card">
+            <div class="card-header anchor">
+                Básico <a href="#example-basic"><i class="fa fa-link"></i></a>
+            </div>
+            <div class="card-body">
+                <p>
+                    Usando o básico, passando apenas os limites do intervalo disponível.
+                </p>
+                <div id="basic-range-slider"></div>
+                <pre>var basicRangeSliderConfig = {
   min: 0,
   max: 100
 };
 
 CurrencyRangeSlider('basic-range-slider', basicRangeSliderConfig);</pre>
-          <div id="basic-range-slider"></div>
+            </div>
         </div>
-      </div>
 
-      <div class="card">
-        <div class="card-header">Básico</div>
-        <div class="card-body">
-          <pre>var labelRangeSliderConfig = {
+        <div id="example-label-prefix" class="card">
+            <div class="card-header anchor">
+                Prefixando label <a href="#example-label-prefix"><i class="fa fa-link"></i></a>
+            </div>
+            <div class="card-body">
+                <p>
+                    Usando o parâmetro <code>labelPrefix</code> para prefixar um texto aos valores nas labels do slider.
+                </p>
+                <div id="label-prefix-range-slider"></div>
+                <pre>var labelPrefixRangeSliderConfig = {
     min: 0,
     max: 100,
     labelPrefix: 'R$ '
   };
 
-CurrencyRangeSlider('label-range-slider', labelRangeSliderConfig);</pre>
-          <div id="label-range-slider"></div>
+CurrencyRangeSlider('label-prefix-range-slider', labelPrefixRangeSliderConfig);</pre>
+            </div>
         </div>
-      </div>
+
+        <div id="example-limit-range" class="card">
+            <div class="card-header anchor">
+                Limite de intervalo dinâmico <a href="#example-limit-range"><i class="fa fa-link"></i></a>
+            </div>
+            <div class="card-body">
+                <p>
+                    Definindo o parâmetro <code>limitToRange</code> como <code>false</code> torna possível ultrapassar o limite determinado ao intervalo conforme o usuário aumenta os valores, via input.
+                </p>
+                <div id="limit-range-slider"></div>
+                <div class="alert alert-info">
+                    Clique no valor mínimo selecionado e insira um valor mínimo menor que o limite do intervalo, maior ou igual a 0. <br />
+                    Clique no valor mázimo selecionado e insira um valor máximo maior que o limite do intervalo.
+                </div>
+                <pre>var limitRangeSliderConfig = {
+    min: 20,
+    max: 100,
+    range: {
+        min: 38,
+        max: 89
+    },
+    limitToRange: false
+  };
+
+CurrencyRangeSlider('limit-range-slider', limitRangeSliderConfig);</pre>
+            </div>
+        </div>
+
+        <div id="example-input-enter" class="card">
+            <div class="card-header anchor">
+                Enviando valor de input com ENTER <a href="#example-input-enter"><i class="fa fa-link"></i></a>
+            </div>
+            <div class="card-body">
+                <p>
+                    Definindo o parâmetro <code>inputEnter</code> como <code>true</code> faz com que os inputs esperem que o usuário tecle <code>ENTER</code> para que o slider atualize os valores, substituindo a função de <code>debounce</code>.
+                </p>
+                <div id="input-enter-range-slider"></div>
+                <div class="alert alert-info">
+                    Clique no valor mínimo selecionado e insira um valor mínimo menor que o limite do intervalo, maior ou igual a 0. <br />
+                    Clique no valor mázimo selecionado e insira um valor máximo maior que o limite do intervalo.
+                </div>
+                <pre>var inputEnterRangeSliderConfig = {
+    min: 0,
+    max: 100,
+    inputEnter: true
+  };
+
+CurrencyRangeSlider('input-enter-range-slider', inputEnterRangeSliderConfig);</pre>
+            </div>
+        </div>
 
     </div>
-  </div>
+</div>
 
-  <script type="text/javascript" src="./dist/currency-range-slider.js"></script>
-  <script type="text/javascript" src="./dist/main.js"></script>
+<script type="text/javascript" src="./dist/currency-range-slider.js"></script>
+<script type="text/javascript" src="./dist/main.js"></script>
 </body>
 
 </html>
