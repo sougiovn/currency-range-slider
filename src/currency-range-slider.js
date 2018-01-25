@@ -23,6 +23,7 @@
         var ON_TOUCH_START = 'ontouchstart';
         var RANGE_CHANGE = 'rangeChange';
         var REGEXP_PCT = /%/;
+        var RESIZE = 'resize';
         var SET_RANGE = 'setRange';
         var SPAN = 'span';
         var TOUCH_START = 'touchstart';
@@ -86,6 +87,7 @@
         }
 
         function dispatchDestroy() {
+            window.removeEventListener(RESIZE, onWindowResize, true);
             window.removeEventListener(MOUSE_UP, onWindowMouseUp, true);
 
             rootElement.removeEventListener(SET_RANGE, setRange, true)
@@ -267,6 +269,16 @@
         function onWindowMouseUp() {
             rootElement.removeEventListener(MOUSE_MOVE, onMinSliderMouseMove, true);
             rootElement.removeEventListener(MOUSE_MOVE, onMaxSliderMouseMove, true);
+        }
+
+        function onWindowResize() {
+            var minValue = valueParser(range.min);
+            var maxValue = valueParser(range.max);
+
+            var compare = minValue >= maxValue;
+
+            resolveMaxValue(maxValue, compare);
+            resolveMinValue(minValue, compare);
         }
 
         function resolveMaxRangeLimit(minValue, maxValue, compare) {
@@ -662,6 +674,7 @@
             maxViewerView = rootElement.querySelector('.currency-range-slider-viewer-container .currency-range-slider-viewer-max .currency-range-slider-viewer-view');
             maxViewerInput = rootElement.querySelector('.currency-range-slider-viewer-container .currency-range-slider-viewer-max .currency-range-slider-viewer-input');
         }
+
         function setupInputEvents() {
             rootElement.addEventListener(DESTROY, dispatchDestroy, true);
             rootElement.addEventListener(SET_RANGE, setRange, true)
@@ -692,6 +705,7 @@
 
         function setupOutputEvents() {
             setupWindowMouseUpEvent();
+            setupWindowResizeEvent();
             setupMinSliderMouseDownEvent();
             setupMaxSliderMouseDownEvent();
             setupViewerViewEvents(MIN);
@@ -793,6 +807,10 @@
             window.addEventListener(MOUSE_UP, onWindowMouseUp, true);
         }
 
+        function setupWindowResizeEvent() {
+            window.addEventListener(RESIZE, onWindowResize, true);
+        }
+
         function toggleMaxEditingMode() {
             if (editingMaxValue) {
                 setupViewerViewEvents(MAX);
@@ -823,7 +841,10 @@
             } else {
                 setupTruncatedViewerInputEvents();
             }
+
             editingTruncatedValue = !editingTruncatedValue;
+
+            resolveTruncatedViewerPosition();
         }
 
         function updateRangeHighlight() {

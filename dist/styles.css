@@ -11,6 +11,8 @@ h3, h5 {
 
 .anchor a {
   visibility: hidden; }
+  .anchor a i {
+    transform: rotate(90deg); }
 
 .anchor:hover a {
   visibility: visible; }

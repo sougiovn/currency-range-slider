@@ -16,6 +16,9 @@ h3, h5 {
 .anchor {
   a {
     visibility: hidden;
+    i {
+      transform: rotate(90deg);
+    }
   }
   &:hover {
     a {

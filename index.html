@@ -31,13 +31,53 @@
         <p>
             Este componente é dedicado exclusivamente para trabalhar com range de valores monetários positivos.
         </p>
+        <p>
+            Suas features são:
+            <ul>
+                <li>
+                    Arrastar o slider para escolher o intervalo desejado
+                </li>
+                <li>
+                    Fazer input do valor desejado para o intervalo
+                    <ul>
+                        <li>
+                            Clique na label abaixo do slider para habilitar o input do slider
+                        </li>
+                        <li>
+                            Insirá o valor desejado
+                        </li>
+                        <li>
+                            Atualize conforme digita - default (<code>debounce</code> de 600ms, o tempo pode ser configurado)
+                        </li>
+                        <li>
+                            Atuailze ao teclar <code>ENTER</code> - opcional
+                        </li>
+                        <li>
+                            Os sliders são tratados em conjunto quando estão próximos,
+                            assim é necessário inserir valores nos dois inputs para atualizá-los
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    Limite de intervalo dinâmico - opcional (expande limite via valores inseridos no input)
+                </li>
+                <li>
+                    Opção de inserir um texto prefixado aos valores
+                </li>
+                <li>
+                    Opção de mudar o formatador e parser dos números para melhor atender suas necessidades
+                </li>
+                <li>
+                    API para selecionar valor do intervalo selecinado, destruir o componente e receber os valores selecionados
+                </li>
+            </ul>
+        </p>
         <h5>Exemplo</h5>
         <div id="how-to-range-slider"></div>
         <pre>var rangeSliderConfig = {
   min: 0,
   max: 100
 };
-
 CurrencyRangeSlider('id-elemento', rangeSliderConfig);</pre>
     </div>
 
@@ -59,13 +99,13 @@ CurrencyRangeSlider('id-elemento', rangeSliderConfig);</pre>
 
             <tbody>
             <tr>
-                <td>debounceTime</td>
+                <td><a href="#example-debounce-time">debounceTime</a></td>
                 <td>number | default: 600</td>
                 <td>Tempo de debounce para atualizar slider ao inserir dados no input.</td>
             </tr>
 
             <tr>
-                <td>inputEnter</td>
+                <td><a href="#example-input-enter">inputEnter</a></td>
                 <td>boolean | default: false</td>
                 <td>
                     Input deixa de usar função de debounce para atualizar slider e passa a atualizar quando o usuário
@@ -74,13 +114,13 @@ CurrencyRangeSlider('id-elemento', rangeSliderConfig);</pre>
             </tr>
 
             <tr>
-                <td>labelPrefix</td>
+                <td><a href="#example-label-prefix">labelPrefix</a></td>
                 <td>string | default: ''</td>
                 <td>Texto prefixado nas labels.</td>
             </tr>
 
             <tr>
-                <td>limitToRange</td>
+                <td><a href="#example-limit-range">limitToRange</a></td>
                 <td>boolean | default: true</td>
                 <td>Caso <code>true</code>, ao informar em um input, um valor maior do que limite definido para o
                     intervalo, este número passa a ser o limite do intervalo. Funciona para valores mínimo e máximo,
@@ -89,19 +129,19 @@ CurrencyRangeSlider('id-elemento', rangeSliderConfig);</pre>
             </tr>
 
             <tr>
-                <td>max *</td>
+                <td><a href="#example-basic">max *</a></td>
                 <td>number</td>
                 <td>Limite máximo do intervalo.</td>
             </tr>
 
             <tr>
-                <td>min *</td>
+                <td><a href="#example-basic">min *</a></td>
                 <td>number</td>
                 <td>Limite mínimo do intervalo.</td>
             </tr>
 
             <tr>
-                <td>range</td>
+                <td><a href="#example-ranged">range</a></td>
                 <td>object | default: {min, max}</td>
                 <td>Objeto contendo atributos <code>min</code> e <code>max</code> para atribuir aos valores do intervalo
                     selecionado. Caso não seja passado nenhum valor, o intervalor selecionado será igual aos limites do
@@ -225,8 +265,32 @@ CurrencyRangeSlider('id-elemento', rangeSliderConfig);</pre>
   min: 0,
   max: 100
 };
-
 CurrencyRangeSlider('basic-range-slider', basicRangeSliderConfig);</pre>
+            </div>
+        </div>
+
+        <div id="example-debounce-time" class="card">
+            <div class="card-header anchor">
+                Alterando tempo de <code>debounce</code> <a href="#example-debounce-time"><i class="fa fa-link"></i></a>
+            </div>
+            <div class="card-body">
+                <p>
+                    Definindo o parâmetro <code>debounceTime</code> para alterar o tempo de espera pela digitação do usuário nos inputs.
+                </p>
+                <div id="short-debounce-range-slider"></div>
+                <pre>var shortDebounceRangeSliderConfig = {
+    min: 0,
+    max: 100,
+    debounceTime: 100
+};
+CurrencyRangeSlider('short-debounce-range-slider', shortDebounceRangeSliderConfig);</pre>
+                <div id="long-debounce-range-slider"></div>
+                <pre>var longDebounceRangeSliderConfig = {
+    min: 0,
+    max: 100,
+    debounceTime: 1000
+};
+CurrencyRangeSlider('long-debounce-range-slider', longDebounceRangeSliderConfig);</pre>
             </div>
         </div>
 
@@ -243,9 +307,29 @@ CurrencyRangeSlider('basic-range-slider', basicRangeSliderConfig);</pre>
     min: 0,
     max: 100,
     labelPrefix: 'R$ '
-  };
-
+};
 CurrencyRangeSlider('label-prefix-range-slider', labelPrefixRangeSliderConfig);</pre>
+            </div>
+        </div>
+
+        <div id="example-ranged" class="card">
+            <div class="card-header anchor">
+                Iniciando slider com intervalo selecionado<a href="#example-ranged"><i class="fa fa-link"></i></a>
+            </div>
+            <div class="card-body">
+                <p>
+                    Definindo o parâmetro <code>range</code> com valores <code>min</code> e <code>max</code> para inicializar o slider com um intervalo ja selecionado.
+                </p>
+                <div id="ranged-range-slider"></div>
+                <pre>var rangedRangeSliderConfig = {
+    min: 0,
+    max: 100,
+    range: {
+        min: 20,
+        max: 75
+    }
+};
+CurrencyRangeSlider('ranged-range-slider', rangedRangeSliderConfig);</pre>
             </div>
         </div>
 
@@ -270,15 +354,14 @@ CurrencyRangeSlider('label-prefix-range-slider', labelPrefixRangeSliderConfig);<
         max: 89
     },
     limitToRange: false
-  };
-
+};
 CurrencyRangeSlider('limit-range-slider', limitRangeSliderConfig);</pre>
             </div>
         </div>
 
         <div id="example-input-enter" class="card">
             <div class="card-header anchor">
-                Enviando valor de input com ENTER <a href="#example-input-enter"><i class="fa fa-link"></i></a>
+                Enviando valor de input com <code>ENTER</code> <a href="#example-input-enter"><i class="fa fa-link"></i></a>
             </div>
             <div class="card-body">
                 <p>
@@ -286,15 +369,13 @@ CurrencyRangeSlider('limit-range-slider', limitRangeSliderConfig);</pre>
                 </p>
                 <div id="input-enter-range-slider"></div>
                 <div class="alert alert-info">
-                    Clique no valor mínimo selecionado e insira um valor mínimo menor que o limite do intervalo, maior ou igual a 0. <br />
-                    Clique no valor mázimo selecionado e insira um valor máximo maior que o limite do intervalo.
+                    Clique no valor de um dos sliders, insira um novo valor e tecle <code>ENTER</code> para atualizar o slider.
                 </div>
                 <pre>var inputEnterRangeSliderConfig = {
     min: 0,
     max: 100,
     inputEnter: true
-  };
-
+};
 CurrencyRangeSlider('input-enter-range-slider', inputEnterRangeSliderConfig);</pre>
             </div>
         </div>

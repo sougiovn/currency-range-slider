@@ -88,7 +88,8 @@
     display: block;
     z-index: 1;
     width: 100%;
-    height: 18px; }
+    height: 18px;
+    cursor: pointer; }
     .currency-range-slider-component .currency-range-slider-viewer-container .currency-range-slider-viewer {
       position: absolute;
       box-sizing: border-box;
