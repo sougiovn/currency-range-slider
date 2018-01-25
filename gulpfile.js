@@ -8,19 +8,24 @@ const runSequence = require('run-sequence');
 const webserver = require('gulp-webserver');
 const cleanCss = require('gulp-clean-css');
 const fs = require('fs');
+const replace = require('gulp-replace');
 
 const packageJson = JSON.parse(fs.readFileSync('./package.json'));
+const componentName = packageJson.name;
+const componentFormattedName = formatComponentName();
 const dist = './dist';
 const demo = `${dist}/demo`;
 const src = './src';
 
-gulp.task('clean', () => gulp.src(dist).pipe(clean()));
+gulp.task('clean', () => {
+  return gulp.src([dist, './index.html']).pipe(clean({ force: true }));
+});
 
 gulp.task('dev:sass', () => {
   gulp.src(`${src}/styles.scss`)
     .pipe(sass().on('error', sass.logError))
     .pipe(gulp.dest(dist));
-
+  
   return gulp.src(`${src}/${packageJson.name}.scss`)
     .pipe(sass().on('error', sass.logError))
     .pipe(gulp.dest(dist));
@@ -28,6 +33,8 @@ gulp.task('dev:sass', () => {
 
 gulp.task('dev:html', () => {
   return gulp.src(`${src}/index.html`)
+    .pipe(replace(/\${component-name}/g, componentName))
+    .pipe(replace(/\${component-formatted-name}/g, componentFormattedName))
     .pipe(gulp.dest('.'));
 });
 
@@ -40,7 +47,7 @@ gulp.task('build:sass', () => {
   gulp.src(`${src}/styles.scss`)
     .pipe(sass().on('error', sass.logError))
     .pipe(gulp.dest(demo));
-
+  
   return gulp.src(`${src}/${packageJson.name}.scss`)
     .pipe(sass().on('error', sass.logError))
     .pipe(cleanCss())
@@ -52,13 +59,15 @@ gulp.task('build:sass', () => {
 
 gulp.task('build:html', () => {
   return gulp.src(`${src}/index.html`)
+    .pipe(replace(/\${component-name}/g, componentName))
+    .pipe(replace(/\${component-formatted-name}/g, componentFormattedName))
     .pipe(gulp.dest('.'));
 });
 
 gulp.task('build:js', () => {
   gulp.src(`${src}/*.js`)
     .pipe(gulp.dest(demo));
-
+  
   return gulp.src(`${src}/${packageJson.name}.js`)
     .pipe(uglifyjs())
     .pipe(rename({
@@ -87,4 +96,10 @@ gulp.task('demo', () => {
 gulp.task('build', () => {
   runSequence('clean', 'build:html', 'build:sass', 'build:js');
 });
+
+function formatComponentName() {
+  return componentName.split(/-/).map(substring =>
+    `${substring.charAt(0).toUpperCase()}${substring.substr(1)}`
+  ).join(' ');
+}
 
