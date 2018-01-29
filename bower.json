@@ -1,0 +1,20 @@
+{
+  "name": "currency-range-slider",
+  "description": "",
+  "main": [
+    "dist/currency-range-slider.min.js",
+    "dist/currency-range-slider.min.css"
+  ],
+  "authors": [
+    "Giovane Souza <giovane.bds@gmail.com>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/gigioSouza/currency-range-slider",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
