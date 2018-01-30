@@ -57,6 +57,7 @@
     var resolvedOnMinInputKeyUp;
     var resolvedOnMaxInputKeyUp;
     var resolvedOnJoinedInputKeyUp;
+    var resolvedDispatchRangeChange = debounce(dispatchRangeChange, 100);
     
     init();
     
@@ -321,7 +322,7 @@
       }
       updateRangeHighlight();
       updateViewers(MAX);
-      dispatchRangeChange();
+      resolvedDispatchRangeChange();
     }
     
     function resolveMaxValue(value, compare) {
@@ -406,7 +407,7 @@
       
       updateRangeHighlight();
       updateViewers(MIN);
-      dispatchRangeChange();
+      resolvedDispatchRangeChange();
     }
     
     function resolveMinValue(value, compare) {
@@ -512,10 +513,10 @@
     
     function setRange(event) {
       var minValue = event.detail.min;
-      var maxValue = event.detail.min;
+      var maxValue = event.detail.max;
       
-      joinedViewerMinInput.value = minValue;
-      joinedViewerMaxInput.value = maxValue;
+      joinedViewerMinInput.value = valueFormatter(minValue);
+      joinedViewerMaxInput.value = valueFormatter(maxValue);
       
       onJoinedInputKeyUp();
     }
@@ -927,7 +928,14 @@
     }
     
     function validateInput(inputValue) {
-      return isNotNull(inputValue) && isNotEmpty(inputValue) && !isNaN(valueParser(inputValue));
+      if (isNotNull(inputValue)) {
+        if (isNumber(inputValue)) {
+          return true;
+        }
+        return isNotEmpty(inputValue) && !isNaN(valueParser(inputValue));
+      }
+      
+      return false;
     }
     
     function debounce(fn, wait) {

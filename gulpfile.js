@@ -13,38 +13,16 @@ const replace = require('gulp-replace');
 const packageJson = JSON.parse(fs.readFileSync('./package.json'));
 const componentName = packageJson.name;
 const componentFormattedName = formatComponentName();
+const bower = './bower_components/';
 const dist = './dist';
 const demo = `${dist}/demo`;
 const src = './src';
+const vendors = './vendors/';
 
-gulp.task('clean', () => {
-  return gulp.src([dist, './index.html']).pipe(clean({ force: true }));
-});
+gulp.task('clean', () => gulp.src([dist, './index.html']).pipe(clean({force: true})));
 
-gulp.task('dev:sass', () => {
-  gulp.src(`${src}/styles.scss`)
-    .pipe(sass().on('error', sass.logError))
-    .pipe(gulp.dest(dist));
-  
-  return gulp.src(`${src}/${packageJson.name}.scss`)
-    .pipe(sass().on('error', sass.logError))
-    .pipe(gulp.dest(dist));
-});
-
-gulp.task('dev:html', () => {
-  return gulp.src(`${src}/index.html`)
-    .pipe(replace(/\${component-name}/g, componentName))
-    .pipe(replace(/\${component-formatted-name}/g, componentFormattedName))
-    .pipe(gulp.dest('.'));
-});
-
-gulp.task('dev:js', () => {
-  return gulp.src(`${src}/*.js`)
-    .pipe(gulp.dest(dist));
-});
-
-gulp.task('build:sass', () => {
-  gulp.src(`${src}/styles.scss`)
+gulp.task('sass', () => {
+  gulp.src(`${src}/*.scss`)
     .pipe(sass().on('error', sass.logError))
     .pipe(gulp.dest(demo));
   
@@ -57,14 +35,14 @@ gulp.task('build:sass', () => {
     .pipe(gulp.dest(dist));
 });
 
-gulp.task('build:html', () => {
+gulp.task('html', () => {
   return gulp.src(`${src}/index.html`)
     .pipe(replace(/\${component-name}/g, componentName))
     .pipe(replace(/\${component-formatted-name}/g, componentFormattedName))
     .pipe(gulp.dest('.'));
 });
 
-gulp.task('build:js', () => {
+gulp.task('js', () => {
   gulp.src(`${src}/*.js`)
     .pipe(gulp.dest(demo));
   
@@ -77,10 +55,10 @@ gulp.task('build:js', () => {
 });
 
 gulp.task('watch', () => {
-  runSequence('demo', () => {
-    gulp.watch(`${src}/index.html`, ['dev:html']);
-    gulp.watch(`${src}/*.scss`, ['dev:sass']);
-    gulp.watch(`${src}/*.js`, ['dev:js']);
+  runSequence('build', () => {
+    gulp.watch(`${src}/index.html`, ['html']);
+    gulp.watch(`${src}/*.scss`, ['sass']);
+    gulp.watch(`${src}/*.js`, ['js']);
     gulp.src('.')
       .pipe(webserver({
         livereload: true,
@@ -89,12 +67,20 @@ gulp.task('watch', () => {
   });
 });
 
-gulp.task('demo', () => {
-  runSequence('clean', 'dev:html', 'dev:sass', 'dev:js');
+gulp.task('clean:vendors', () => gulp.src(vendors));
+
+gulp.task('install:vendors', () => {
+  return gulp.src(`${bower}*`)
+    .pipe(gulp.dest(vendors));
+});
+
+gulp.task('vendors', () => {
+  return gulp.src(`${vendors}*`)
+    .pipe(gulp.dest(`${dist}/vendors`));
 });
 
 gulp.task('build', () => {
-  runSequence('clean', 'build:html', 'build:sass', 'build:js');
+  runSequence('clean', 'clean:vendors', 'install:vendors', 'vendors', 'html', 'sass', 'js');
 });
 
 function formatComponentName() {
@@ -102,4 +88,7 @@ function formatComponentName() {
     `${substring.charAt(0).toUpperCase()}${substring.substr(1)}`
   ).join(' ');
 }
+
+
+
 
