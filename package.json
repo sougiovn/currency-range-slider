@@ -7,8 +7,7 @@
   "license": "MIT",
   "scripts": {
     "start": "gulp watch",
-    "build": "gulp build",
-    "demo": "gulp demo"
+    "build": "gulp build"
   },
   "devDependencies": {
     "gulp": "^3.9.1",
